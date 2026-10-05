@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Longhand — Workspace mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F5F7; --panel:#FFFFFF; --ink:#141A22; --muted:#5C6672; --line:#E1E5EA;
+  --accent:#0E6B5C; --accent-ink:#FFFFFF; --accent-soft:#E2F0ED;
+  --flag:#FFF0D1; --flag-line:#C58A14; --del:#A92F2B; --del-bg:#FBE9E8;
+  --ui:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --text:"Source Serif 4",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0F1317; --panel:#161B21; --ink:#E8ECF0; --muted:#98A2AE; --line:#262D35;
+    --accent:#3FB9A2; --accent-ink:#06201B; --accent-soft:#16312C;
+    --flag:#3A2E12; --flag-line:#D9A33A; --del:#F08A84; --del-bg:#3A1D1B;}
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.5;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{max-width:1280px;margin:0 auto;padding:0 24px 40px}
+header{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-weight:700;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.brand i{width:22px;height:22px;border-radius:5px;background:var(--accent);display:grid;place-items:center}
+.brand i::after{content:"";width:10px;height:2px;background:var(--accent-ink);box-shadow:0 -4px 0 var(--accent-ink),0 4px 0 -0px transparent;transform:translateY(2px)}
+nav{display:flex;gap:4px}
+nav a{color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:6px;font-weight:500}
+nav a[aria-current]{color:var(--ink);background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+nav a:hover{color:var(--ink)}
+.acct{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:grid;place-items:center;font-size:13px}
+
+.bench{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.toolbar{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
+.field{display:flex;align-items:center;gap:10px}
+.field>span{color:var(--muted);font-size:13px;font-weight:500}
+select{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 28px 7px 10px;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{background:none;border:0;padding:7px 14px;cursor:pointer;color:var(--muted);font-weight:500}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.spacer{flex:1}
+.btn{border:0;border-radius:6px;padding:9px 18px;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{background:var(--bg)}
+kbd{font:500 11px var(--ui);border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);border-radius:4px;padding:1px 5px;margin-left:8px;opacity:.85}
+
+.cols{display:grid;grid-template-columns:1fr 1fr 300px}
+.col{padding:20px 24px 24px;min-width:0}
+.col+.col{border-left:1px solid var(--line)}
+.col h2{font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:space-between;min-height:30px;margin-bottom:12px}
+.manuscript{font-family:var(--text);font-size:18px;line-height:1.75;max-width:62ch}
+.manuscript p+p{margin-top:1em}
+mark{background:var(--flag);color:inherit;border-bottom:2px solid var(--flag-line);border-radius:2px;padding:0 1px}
+.legend{font:500 12px var(--ui);color:var(--muted);display:flex;align-items:center;gap:6px}
+.legend::before{content:"";width:12px;height:8px;background:var(--flag);border-bottom:2px solid var(--flag-line)}
+ins{text-decoration:none;color:var(--accent);background:var(--accent-soft);border-bottom:2px solid var(--accent);border-radius:2px}
+del{color:var(--del);background:var(--del-bg);text-decoration:line-through;border-radius:2px}
+.clean ins{color:inherit;background:none;border:0}
+.clean del{display:none}
+.foot{display:flex;gap:10px;align-items:center;margin-top:20px;color:var(--muted);font-size:13px}
+.foot .grow{flex:1}
+
+.notes ol{list-style:none;padding:0}
+.notes li{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.notes li:first-child{padding-top:0}
+.notes li b{display:block;font-weight:600;margin-bottom:2px}
+.notes li span{color:var(--muted)}
+.rhythm{margin-top:20px}
+.rhythm h3{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:56px;padding-bottom:1px;border-bottom:1px solid var(--line)}
+.bars div{width:100%;background:var(--line);border-radius:2px 2px 0 0}
+.bars.after div{background:var(--accent)}
+.rhythm .row{display:grid;grid-template-columns:54px 1fr;align-items:end;gap:10px;margin-bottom:12px;font-size:12px;color:var(--muted)}
+.bars{width:100%}
+.stats{display:flex;gap:20px;padding:14px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.stats b{color:var(--ink);font-weight:600}
+.caveat{font-size:12.5px;color:var(--muted);margin-top:14px;max-width:70ch}
+
+@media (max-width:1020px){
+  .cols{grid-template-columns:1fr 1fr}
+  .notes{grid-column:1 / -1;border-top:1px solid var(--line);border-left:0!important}
+}
+@media (max-width:680px){
+  .app{padding:0 12px 32px}
+  nav{display:none}
+  .cols{grid-template-columns:1fr}
+  .col+.col{border-left:0;border-top:1px solid var(--line)}
+  .manuscript{font-size:17px}
+  .spacer{display:none}
+  .btn.primary{width:100%}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.seg button{transition:background .15s,filter .15s}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><i aria-hidden="true"></i>Longhand</div>
+    <nav aria-label="Primary">
+      <a href="#" aria-current="page">Workspace</a>
+      <a href="#">Voices</a>
+      <a href="#">History</a>
+      <a href="#">Settings</a>
+    </nav>
+    <div class="acct" aria-label="Account">E</div>
+  </header>
+
+  <main class="bench">
+    <div class="toolbar" role="group" aria-label="Rewrite settings">
+      <label class="field"><span>Voice</span>
+        <select aria-label="Voice">
+          <option>My writing (3 samples)</option>
+          <option>Neutral professional</option>
+          <option>Conversational</option>
+        </select>
+      </label>
+      <div class="field"><span>Edit strength</span>
+        <div class="seg" id="strength">
+          <button aria-pressed="false">Light</button>
+          <button aria-pressed="true">Balanced</button>
+          <button aria-pressed="false">Full rewrite</button>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn primary" type="button">Rewrite<kbd>⌘ ↵</kbd></button>
+    </div>
+
+    <div class="cols">
+      <section class="col" aria-labelledby="h-orig">
+        <h2 id="h-orig">Original <span class="legend">AI patterns flagged</span></h2>
+        <div class="manuscript">
+          <p><mark>In today's fast-paced digital landscape, it is important to note that</mark> remote work has <mark>fundamentally transformed</mark> how teams collaborate. <mark>Moreover,</mark> organizations must <mark>leverage innovative tools to foster seamless communication.</mark> <mark>Furthermore,</mark> a robust approach to async workflows can significantly enhance productivity, ultimately delivering numerous benefits.</p>
+        </div>
+        <div class="foot"><span>44 words</span></div>
+      </section>
+
+      <section class="col" aria-labelledby="h-out">
+        <h2 id="h-out">Rewrite
+          <span class="seg" id="view" role="group" aria-label="View">
+            <button aria-pressed="true" data-v="tracked">Changes</button>
+            <button aria-pressed="false" data-v="clean">Clean</button>
+          </span>
+        </h2>
+        <div class="manuscript" id="out">
+          <p><del>In today's fast-paced digital landscape, it is important to note that remote</del><ins>Remote</ins> work <del>has fundamentally transformed</del><ins>changed</ins> how teams collaborate<ins>, mostly through the tools they picked</ins>. <del>Moreover, organizations must leverage innovative tools to foster seamless communication. Furthermore, a robust approach to async workflows can significantly enhance productivity, ultimately delivering numerous benefits.</del><ins>The ones that communicate well lean on async. They get more done. Fewer people sit through meetings that should have been a message.</ins></p>
+        </div>
+        <div class="foot"><span>36 words</span><span class="grow"></span>
+          <button class="btn ghost" type="button" id="copy">Copy clean text</button>
+        </div>
+      </section>
+
+      <aside class="col notes" aria-labelledby="h-notes">
+        <h2 id="h-notes">What changed</h2>
+        <ol>
+          <li><b>Cut a stock opener</b><span>"In today's fast-paced digital landscape" says nothing the sentence needs.</span></li>
+          <li><b>Removed 2 filler transitions</b><span>"Moreover" and "Furthermore" were doing no work.</span></li>
+          <li><b>Plain wording</b><span>"Leverage innovative tools to foster seamless communication" became a direct claim.</span></li>
+          <li><b>Varied sentence length</b><span>Three even sentences became four of different weight.</span></li>
+        </ol>
+        <div class="rhythm">
+          <h3>Sentence length (words)</h3>
+          <div class="row"><span>Before</span><div class="bars" aria-label="Before: 19, 10, 15 words"><div style="height:76%"></div><div style="height:40%"></div><div style="height:60%"></div></div></div>
+          <div class="row"><span>After</span><div class="bars after" aria-label="After: 12, 8, 4, 11 words"><div style="height:48%"></div><div style="height:32%"></div><div style="height:16%"></div><div style="height:44%"></div></div></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="stats">
+      <span><b>5</b> stock phrases removed</span>
+      <span><b>0</b> facts altered</span>
+      <span>Reading time <b>9 sec</b></span>
+    </div>
+  </main>
+  <p class="caveat">AI detectors are probabilistic and disagree with each other. Longhand improves how text reads and varies its patterns; it can't guarantee any score on any detector.</p>
+</div>
+
+<script>
+(function(){
+  var out=document.getElementById('out');
+  function group(el,cb){
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      el.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+      if(cb) cb(b);
+    });
+  }
+  group(document.getElementById('strength'));
+  group(document.getElementById('view'),function(b){out.classList.toggle('clean',b.dataset.v==='clean')});
+  document.getElementById('copy').addEventListener('click',function(){
+    var c=out.cloneNode(true); c.querySelectorAll('del').forEach(function(d){d.remove()});
+    var t=c.textContent.trim(), btn=this;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){btn.textContent='Copied'},function(){btn.textContent='Copy unavailable'});
+    setTimeout(function(){btn.textContent='Copy clean text'},1600);
+  });
+})();
+</script>
+</body>
+</html>
