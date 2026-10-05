@@ -1,5 +1,5 @@
-import { WorkspaceFrame } from "@/components/workspace";
+import { WorkspaceContainer } from "@/components/workspace";
 
 export default function WorkspacePage() {
-  return <WorkspaceFrame />;
+  return <WorkspaceContainer />;
 }

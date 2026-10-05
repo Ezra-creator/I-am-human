@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Hanken_Grotesk, Source_Serif_4 } from "next/font/google";
 import { Header, BottomNav, SkipLink } from "@/components/shell";
 import { ToastProvider, ToastViewport } from "@/components/ui/toast";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const hankenGrotesk = Hanken_Grotesk({
@@ -63,15 +64,17 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col font-ui text-[15px] bg-bg text-ink antialiased">
         <ToastProvider swipeDirection="right">
-          <SkipLink />
-          <Header />
-          <div className="w-full max-w-[1280px] mx-auto px-3 md:px-6 pt-2 pb-[calc(76px+env(safe-area-inset-bottom,0px))] min-[681px]:pb-10 flex-1 flex flex-col">
-            <main id="main-content" tabIndex={-1} className="w-full flex-1 flex flex-col outline-none">
-              {children}
-            </main>
-          </div>
-          <BottomNav />
-          <ToastViewport />
+          <TooltipProvider delayDuration={200}>
+            <SkipLink />
+            <Header />
+            <div className="w-full max-w-[1280px] mx-auto px-3 md:px-6 pt-2 pb-[calc(76px+env(safe-area-inset-bottom,0px))] min-[681px]:pb-10 flex-1 flex flex-col">
+              <main id="main-content" tabIndex={-1} className="w-full flex-1 flex flex-col outline-none">
+                {children}
+              </main>
+            </div>
+            <BottomNav />
+            <ToastViewport />
+          </TooltipProvider>
         </ToastProvider>
       </body>
     </html>
