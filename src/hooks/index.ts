@@ -1,2 +1,1 @@
-// Custom hooks module
-export {};
+export * from "./use-rewrite";

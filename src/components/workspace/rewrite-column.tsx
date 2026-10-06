@@ -84,11 +84,11 @@ export function RewriteColumn() {
         )}
 
         {status === "running" && (
-          <div className="py-8">
+          <div className="flex-1 flex flex-col">
             <p
               role="status"
               aria-live="polite"
-              className="font-ui text-[14px] text-muted flex items-center gap-2.5 select-none"
+              className="font-ui text-[14px] text-muted flex items-center gap-2.5 select-none mb-4"
             >
               <span
                 className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-accent border-t-transparent"
@@ -96,6 +96,11 @@ export function RewriteColumn() {
               />
               <span>Rewriting…</span>
             </p>
+            {rewriteText && (
+              <div className="font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] max-w-[62ch] text-ink whitespace-pre-wrap flex-1">
+                <p>{rewriteText}</p>
+              </div>
+            )}
           </div>
         )}
 

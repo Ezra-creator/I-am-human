@@ -3,7 +3,6 @@ import {
   type EditStrength,
   type RewriteResult,
   startRewrite,
-  NotConnectedError,
 } from "./rewrite-client";
 import { MIN_INPUT_CHARS, MAX_INPUT_CHARS } from "./limits";
 
@@ -147,6 +146,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         voiceId,
         strength,
         signal: controller.signal,
+        onPartial: (partialRewrite) => {
+          set({
+            result: { rewrite: partialRewrite, notes: [] },
+          });
+        },
       });
 
       set({
@@ -161,10 +165,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         return;
       }
 
-      let message = "The rewrite engine isn’t connected yet.";
-      if (err instanceof NotConnectedError) {
-        message = err.message;
-      } else if (err instanceof Error) {
+      let message = "An unexpected error occurred while processing your rewrite.";
+      if (err instanceof Error) {
         message = err.message;
       }
 
