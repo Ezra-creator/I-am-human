@@ -1,31 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Hanken_Grotesk, Source_Serif_4 } from "next/font/google";
-import { Header, BottomNav, SkipLink } from "@/components/shell";
-import { ToastProvider, ToastViewport } from "@/components/ui/toast";
+import { Header, BottomNav, SkipLink, Footer } from "@/components/shell";
+import { ToastProvider, ToastViewport, Toaster } from "@/components/ui";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
-const hankenGrotesk = Hanken_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-ui",
-  display: "swap",
-});
-
-const sourceSerif4 = Source_Serif_4({
-  subsets: ["latin"],
-  weight: "variable",
-  axes: ["opsz"],
-  variable: "--font-text",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
+  metadataBase: new URL("https://imhuman.app"),
   title: {
     template: "%s — I’m human",
-    default: "I’m human",
+    default: "I’m human — Natural rewrites for AI drafts",
   },
   description: "Rewrite AI-drafted text so it sounds like you wrote it.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "I’m human — Natural rewrites for AI drafts",
+    description: "Rewrite AI-drafted text so it sounds like you wrote it.",
+    url: "https://imhuman.app",
+    siteName: "I’m human",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "I’m human — Natural rewrites for AI drafts",
+    description: "Rewrite AI-drafted text so it sounds like you wrote it.",
+  },
 };
 
 export const viewport: Viewport = {
@@ -43,6 +44,9 @@ const themeInitScript = `
       document.documentElement.setAttribute('data-theme', stored);
     }
   } catch(e) {}
+  try {
+    localStorage.removeItem(['imhuman', 'groq', 'key'].join('-'));
+  } catch(e) {}
 })();
 `;
 
@@ -55,9 +59,14 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${hankenGrotesk.variable} ${sourceSerif4.variable}`}
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&display=swap"
+        />
         <script
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
@@ -72,7 +81,9 @@ export default function RootLayout({
                 {children}
               </main>
             </div>
+            <Footer />
             <BottomNav />
+            <Toaster />
             <ToastViewport />
           </TooltipProvider>
         </ToastProvider>

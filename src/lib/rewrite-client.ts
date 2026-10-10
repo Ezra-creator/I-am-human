@@ -15,6 +15,9 @@ export interface RewriteResult {
 export interface RewriteRequest {
   original: string;
   voiceId: string;
+  voice?:
+    | { kind: "preset"; id: "neutral" | "conversational" }
+    | { kind: "profile"; descriptor: string };
   strength: EditStrength;
   signal?: AbortSignal;
   onPartial?: (partialRewrite: string) => void;
@@ -75,28 +78,16 @@ export async function startRewrite(
     throw new RewriteError("You appear to be offline. Check your network connection.", "OFFLINE");
   }
 
-  // 1. Read optional user Groq key from localStorage
-  let userKey: string | null = null;
-  if (typeof window !== "undefined") {
-    try {
-      userKey = localStorage.getItem("imhuman-groq-key")?.trim() || null;
-    } catch {
-      // Ignore localStorage read failures
-    }
-  }
-
-  // 2. Prepare headers & payload
+  // 1. Prepare headers & payload
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  if (userKey) {
-    headers["x-user-groq-key"] = userKey;
-  }
 
   const voicePayload =
-    request.voiceId === "conversational"
+    request.voice ??
+    (request.voiceId === "conversational"
       ? ({ kind: "preset", id: "conversational" } as const)
-      : ({ kind: "preset", id: "neutral" } as const);
+      : ({ kind: "preset", id: "neutral" } as const));
 
   let response: Response;
   try {
@@ -120,7 +111,7 @@ export async function startRewrite(
     );
   }
 
-  // 3. Handle non-200 JSON errors
+  // 2. Handle non-200 JSON errors
   if (!response.ok) {
     let errorMessage = "An error occurred while processing the rewrite.";
     let errorCode = "UNKNOWN";
@@ -135,9 +126,6 @@ export async function startRewrite(
       if (response.status === 429) {
         errorMessage = "Groq is busy right now. Try again in about 20 seconds.";
         errorCode = "RATE_LIMITED";
-      } else if (response.status === 401) {
-        errorMessage = "Invalid Groq API key. Please check your key in Settings.";
-        errorCode = "INVALID_KEY";
       }
     }
 

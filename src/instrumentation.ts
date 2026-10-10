@@ -1,0 +1,12 @@
+export async function register() {
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    const { validateServerEnv } = await import("@/lib/env");
+    try {
+      validateServerEnv();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(`[startup] Environment validation error: ${err.message}`);
+      }
+    }
+  }
+}

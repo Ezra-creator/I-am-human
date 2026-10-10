@@ -4,7 +4,10 @@ import {
   type RewriteResult,
   startRewrite,
 } from "./rewrite-client";
-import { MIN_INPUT_CHARS, MAX_INPUT_CHARS } from "./limits";
+import { getVoiceSafe, type HistoryEntry } from "./db";
+import { saveHistorySafe } from "./history";
+import { MIN_INPUT_CHARS, MAX_INPUT_CHARS, countWords } from "./limits";
+import { countFlags } from "./flags";
 
 const STORAGE_KEY = "imhuman-draft";
 
@@ -22,12 +25,16 @@ export interface WorkspaceState {
   result: RewriteResult | null;
   error: string | null;
   view: "tracked" | "clean";
+  mode: "editing" | "reviewing";
+  highlightTerm: string | null;
   abortController: AbortController | null;
 
   setOriginal: (original: string) => void;
   setStrength: (strength: EditStrength) => void;
   setVoiceId: (voiceId: string) => void;
   setView: (view: "tracked" | "clean") => void;
+  setMode: (mode: "editing" | "reviewing") => void;
+  setHighlightTerm: (term: string | null) => void;
   setStatus: (status: "idle" | "running" | "done" | "error") => void;
   setResult: (result: RewriteResult | null) => void;
   setError: (error: string | null) => void;
@@ -35,6 +42,7 @@ export interface WorkspaceState {
   runRewrite: () => Promise<void>;
   stopRewrite: () => void;
   initFromStorage: () => void;
+  restoreHistoryEntry: (entry: HistoryEntry) => void;
 }
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -70,10 +78,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   result: null,
   error: null,
   view: "tracked",
+  mode: "editing",
+  highlightTerm: null,
   abortController: null,
 
   setOriginal: (original: string) => {
-    set({ original });
+    set({ original, mode: "editing" });
     saveDraftToStorage({
       original,
       strength: get().strength,
@@ -101,6 +111,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   setView: (view: "tracked" | "clean") => {
     set({ view });
+  },
+
+  setMode: (mode: "editing" | "reviewing") => {
+    set({ mode });
+  },
+
+  setHighlightTerm: (highlightTerm: string | null) => {
+    set({ highlightTerm });
   },
 
   setStatus: (status) => {
@@ -141,9 +159,24 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     });
 
     try {
+      let voicePayload:
+        | { kind: "preset"; id: "neutral" | "conversational" }
+        | { kind: "profile"; descriptor: string } =
+        voiceId === "conversational"
+          ? { kind: "preset", id: "conversational" }
+          : { kind: "preset", id: "neutral" };
+
+      if (voiceId !== "neutral" && voiceId !== "conversational") {
+        const profile = await getVoiceSafe(voiceId);
+        if (profile?.descriptor) {
+          voicePayload = { kind: "profile", descriptor: profile.descriptor };
+        }
+      }
+
       const result = await startRewrite({
         original,
         voiceId,
+        voice: voicePayload,
         strength,
         signal: controller.signal,
         onPartial: (partialRewrite) => {
@@ -156,9 +189,46 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       set({
         status: "done",
         result,
+        mode: "reviewing",
         error: null,
         abortController: null,
       });
+
+      // Auto-save successful rewrite to history (never on error or abort)
+      try {
+        let voiceName = "Neutral professional";
+        if (voiceId === "conversational") {
+          voiceName = "Casual conversational";
+        } else if (voiceId !== "neutral") {
+          const profile = await getVoiceSafe(voiceId);
+          if (profile?.name) voiceName = profile.name;
+        }
+
+        const origWords = countWords(original);
+        const rewWords = countWords(result.rewrite);
+        const origFlags = countFlags(original);
+        const rewFlags = countFlags(result.rewrite);
+
+        const historyItem: HistoryEntry = {
+          id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `hist-${Date.now()}`,
+          createdAt: Date.now(),
+          original,
+          rewrite: result.rewrite,
+          strength,
+          voiceName,
+          notes: result.notes,
+          stats: {
+            originalWords: origWords,
+            rewriteWords: rewWords,
+            stockRemoved: Math.max(0, origFlags - rewFlags),
+            readingTimeSec: Math.max(1, Math.round(rewWords / 230)),
+          },
+        };
+
+        saveHistorySafe(historyItem);
+      } catch (saveErr) {
+        console.error("Failed to auto-save history:", saveErr);
+      }
     } catch (err: unknown) {
       if (controller.signal.aborted) {
         set({ status: "idle", abortController: null });
@@ -184,6 +254,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       abortController.abort();
     }
     set({ status: "idle", abortController: null });
+  },
+
+  restoreHistoryEntry: (entry: HistoryEntry) => {
+    set({
+      original: entry.original,
+      strength: entry.strength,
+      result: { rewrite: entry.rewrite, notes: entry.notes },
+      status: "done",
+      mode: "reviewing",
+      error: null,
+    });
   },
 
   initFromStorage: () => {

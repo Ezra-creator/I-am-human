@@ -5,6 +5,7 @@ import { streamText } from "ai";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { buildSystemPrompt, estimateMaxTokens } from "@/lib/prompts";
 import { MIN_INPUT_CHARS, MAX_INPUT_CHARS } from "@/lib/limits";
+import { validateServerEnv } from "@/lib/env";
 
 export const runtime = "nodejs";
 
@@ -39,7 +40,6 @@ interface ApiErrorResponse {
       | "INVALID_INPUT"
       | "RATE_LIMITED"
       | "UPSTREAM_RATE_LIMITED"
-      | "INVALID_KEY"
       | "UPSTREAM_ERROR"
       | "INTERNAL_ERROR";
     message: string;
@@ -50,10 +50,12 @@ function jsonError(
   code: ApiErrorResponse["error"]["code"],
   message: string,
   status: number,
+  startTime: number,
   headers?: Record<string, string>
 ) {
-  // Log status and error code only; never request text or keys
-  console.error(`[api/rewrite] status: ${status}, error_code: ${code}`);
+  // Log status, error code, and timing only; never log text or keys
+  const duration = `${Date.now() - startTime}ms`;
+  console.error(`[api/rewrite] status: ${status}, error_code: ${code}, duration: ${duration}`);
   return NextResponse.json<ApiErrorResponse>(
     { error: { code, message } },
     { status, headers }
@@ -61,55 +63,80 @@ function jsonError(
 }
 
 export async function POST(req: NextRequest) {
-  // 1. Read optional user Groq key from header (never logged or persisted)
-  const userGroqKey = req.headers.get("x-user-groq-key")?.trim() || null;
-  const hasUserKey = Boolean(userGroqKey);
+  const startTime = Date.now();
 
-  // 2. Client IP rate limiting (exempt if user provided their own key)
-  if (!hasUserKey) {
-    const forwarded = req.headers.get("x-forwarded-for");
-    const clientIp = forwarded ? forwarded.split(",")[0].trim() : "127.0.0.1";
-
-    const rateResult = checkRateLimit(clientIp);
-    if (!rateResult.success) {
-      const retryAfter = rateResult.retryAfterSeconds ?? 30;
-      return jsonError(
-        "RATE_LIMITED",
-        `You’ve reached the free request limit. Try again in about ${retryAfter} seconds, or add your own Groq key in Settings.`,
-        429,
-        { "Retry-After": String(retryAfter) }
-      );
-    }
+  // 1. Content-Type pre-check
+  const contentType = req.headers.get("content-type");
+  if (!contentType || !contentType.toLowerCase().includes("application/json")) {
+    return jsonError(
+      "INVALID_INPUT",
+      "Invalid Content-Type header. Expected application/json.",
+      415,
+      startTime
+    );
   }
 
-  // 3. Body validation
+  // 2. Oversized body pre-check (allow reasonable JSON envelope overhead)
+  const contentLength = req.headers.get("content-length");
+  const maxBodyBytes = MAX_INPUT_CHARS * 4 + 4096;
+  if (contentLength && parseInt(contentLength, 10) > maxBodyBytes) {
+    return jsonError(
+      "INVALID_INPUT",
+      "Request payload exceeds maximum allowed size.",
+      413,
+      startTime
+    );
+  }
+
+  // 3. Client IP rate limiting
+  const forwarded = req.headers.get("x-forwarded-for");
+  const clientIp = forwarded ? forwarded.split(",")[0].trim() : "127.0.0.1";
+
+  const rateResult = checkRateLimit(clientIp);
+  if (!rateResult.success) {
+    const retryAfter = rateResult.retryAfterSeconds ?? 30;
+    return jsonError(
+      "RATE_LIMITED",
+      `Groq is busy right now. Try again in about ${retryAfter} seconds.`,
+      429,
+      startTime,
+      { "Retry-After": String(retryAfter) }
+    );
+  }
+
+  // 4. Body validation
   let parsedBody: z.infer<typeof RequestSchema>;
   try {
     const rawBody = await req.json();
     const result = RequestSchema.safeParse(rawBody);
     if (!result.success) {
       const firstIssue = result.error.issues[0]?.message || "Invalid request payload.";
-      return jsonError("INVALID_INPUT", firstIssue, 400);
+      return jsonError("INVALID_INPUT", firstIssue, 400, startTime);
     }
     parsedBody = result.data;
   } catch {
-    return jsonError("INVALID_INPUT", "Malformed JSON request body.", 400);
+    return jsonError("INVALID_INPUT", "Malformed JSON request body.", 400, startTime);
   }
 
-  // 4. API Key resolution
-  const apiKey = userGroqKey || process.env.GROQ_API_KEY;
-  if (!apiKey) {
+  // 5. Environment & API Key resolution (strictly server-side environment variable)
+  let apiKey: string;
+  let modelId: string;
+  try {
+    const serverEnv = validateServerEnv();
+    apiKey = serverEnv.GROQ_API_KEY;
+    modelId = serverEnv.GROQ_MODEL;
+  } catch {
     return jsonError(
-      "INVALID_KEY",
-      "No Groq API key configured. Please set your key in Settings or add GROQ_API_KEY on the server.",
-      401
+      "INTERNAL_ERROR",
+      "Groq service is not configured on this server.",
+      500,
+      startTime
     );
   }
 
-  // 5. Groq model invocation
+  // 6. Groq model invocation
   try {
     const groq = createGroq({ apiKey });
-    const modelId = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
     const model = groq(modelId);
 
     const systemPrompt = buildSystemPrompt(parsedBody.strength, parsedBody.voice);
@@ -124,7 +151,7 @@ export async function POST(req: NextRequest) {
       abortSignal: req.signal,
     });
 
-    console.log("[api/rewrite] status: 200 (streaming started)");
+    console.log(`[api/rewrite] status: 200, duration: ${Date.now() - startTime}ms (streaming started)`);
     return streamResult.toTextStreamResponse();
   } catch (err: unknown) {
     const errorObj = err as {
@@ -136,20 +163,13 @@ export async function POST(req: NextRequest) {
     const status = errorObj?.statusCode || 500;
     const msg = errorObj?.message || "";
 
-    if (status === 401 || msg.toLowerCase().includes("invalid api key")) {
-      return jsonError(
-        "INVALID_KEY",
-        "The Groq API key is invalid. Please verify your key.",
-        401
-      );
-    }
-
     if (status === 429 || msg.toLowerCase().includes("rate limit")) {
       const retryAfter = errorObj.responseHeaders?.["retry-after"] || "20";
       return jsonError(
         "UPSTREAM_RATE_LIMITED",
         `Groq is busy right now. Try again in about ${retryAfter} seconds.`,
         429,
+        startTime,
         { "Retry-After": retryAfter }
       );
     }
@@ -158,14 +178,16 @@ export async function POST(req: NextRequest) {
       return jsonError(
         "UPSTREAM_ERROR",
         "Could not reach Groq servers. Please try again shortly.",
-        502
+        502,
+        startTime
       );
     }
 
     return jsonError(
       "INTERNAL_ERROR",
       "An unexpected error occurred while processing your rewrite.",
-      500
+      500,
+      startTime
     );
   }
 }

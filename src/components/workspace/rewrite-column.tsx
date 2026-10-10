@@ -3,25 +3,39 @@
 import * as React from "react";
 import { useWorkspaceStore } from "@/lib/workspace-store";
 import { countWords } from "@/lib/limits";
+import { computeDiffAsync, type DiffSegment } from "@/lib/diff";
 import { Segmented } from "@/components/ui/segmented";
 import { Button } from "@/components/ui/button";
+import { Copy, Check, RotateCcw } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const VIEW_OPTIONS = [
   { value: "tracked" as const, label: "Changes" },
   { value: "clean" as const, label: "Clean" },
 ] as const;
 
+function isPredominantlyNonLatin(text: string): boolean {
+  if (!text || text.length < 10) return false;
+  const letters = text.match(/[\p{L}]/gu) || [];
+  if (letters.length < 5) return false;
+  const latin = text.match(/[A-Za-z]/g) || [];
+  return (letters.length - latin.length) / letters.length > 0.5;
+}
+
 export function RewriteColumn() {
   const {
+    original,
     status,
     result,
     error,
     view,
     setView,
     runRewrite,
+    highlightTerm,
   } = useWorkspaceStore();
 
   const [copyLabel, setCopyLabel] = React.useState<string>("Copy clean text");
+  const [diffSegments, setDiffSegments] = React.useState<DiffSegment[]>([]);
   const copyTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   React.useEffect(() => {
@@ -33,6 +47,24 @@ export function RewriteColumn() {
   const hasResult = result !== null && status === "done";
   const rewriteText = result?.rewrite ?? "";
   const rewriteWords = hasResult ? countWords(rewriteText) : 0;
+  const nonEnglishNotice = isPredominantlyNonLatin(original) || isPredominantlyNonLatin(rewriteText);
+
+  // Compute diff once per completed result (memoized and worker-backed for >4000 chars)
+  React.useEffect(() => {
+    if (hasResult && original && rewriteText) {
+      let cancelled = false;
+      computeDiffAsync(original, rewriteText).then((segments) => {
+        if (!cancelled) {
+          setDiffSegments(segments);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
+    } else {
+      setDiffSegments([]);
+    }
+  }, [hasResult, original, rewriteText]);
 
   const handleCopy = async () => {
     if (!hasResult || !rewriteText) return;
@@ -42,6 +74,7 @@ export function RewriteColumn() {
       if (!navigator.clipboard?.writeText) {
         throw new Error("Clipboard API unavailable");
       }
+      // "Copy clean text" always copies the clean version without deletions
       await navigator.clipboard.writeText(rewriteText);
       setCopyLabel("Copied");
     } catch {
@@ -51,6 +84,64 @@ export function RewriteColumn() {
     copyTimerRef.current = setTimeout(() => {
       setCopyLabel("Copy clean text");
     }, 1600);
+  };
+
+  /**
+   * Render tracked changes with semantic <ins> and <del> tags
+   */
+  const renderTrackedDiff = () => {
+    if (diffSegments.length === 0) {
+      return <p className="whitespace-pre-wrap">{rewriteText}</p>;
+    }
+
+    return (
+      <div className="whitespace-pre-wrap leading-[1.75]">
+        {diffSegments.map((seg, idx) => {
+          const isHighlight =
+            highlightTerm &&
+            seg.value.toLowerCase().includes(highlightTerm.toLowerCase());
+
+          if (seg.type === "added") {
+            return (
+              <ins
+                key={`diff-${idx}`}
+                className={cn(
+                  "text-accent bg-accent-soft border-b-2 border-accent rounded-[2px] px-0.5 no-underline font-text inline transition-colors",
+                  isHighlight && "ring-2 ring-accent"
+                )}
+              >
+                <span className="sr-only">inserted: </span>
+                {seg.value}
+              </ins>
+            );
+          }
+
+          if (seg.type === "removed") {
+            return (
+              <del
+                key={`diff-${idx}`}
+                className={cn(
+                  "text-del bg-del-bg line-through rounded-[2px] px-0.5 font-text inline transition-colors",
+                  isHighlight && "ring-2 ring-del"
+                )}
+              >
+                <span className="sr-only">deleted: </span>
+                {seg.value}
+              </del>
+            );
+          }
+
+          return (
+            <span
+              key={`diff-${idx}`}
+              className={cn(isHighlight && "bg-amber-200 dark:bg-amber-800 rounded-[2px]")}
+            >
+              {seg.value}
+            </span>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
@@ -70,7 +161,7 @@ export function RewriteColumn() {
         />
       </div>
 
-      {/* Main body depending on state */}
+      {/* Main body depending on status */}
       <div className="flex-1 flex flex-col">
         {status === "idle" && (
           <div className="py-8 max-w-md select-none">
@@ -110,16 +201,17 @@ export function RewriteColumn() {
             className="p-4 rounded-[6px] bg-del-bg text-del border border-del/20 flex flex-col items-start gap-3 my-2"
           >
             <p className="font-ui text-[14px] leading-relaxed font-medium">
-              {error || "The rewrite engine isn’t connected yet."}
+              {error || "An error occurred while processing your rewrite."}
             </p>
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={() => runRewrite()}
-              className="border-del/40 text-del hover:bg-del-bg/80"
+              className="border-del/40 text-del hover:bg-del-bg/80 gap-1.5"
             >
-              Try again
+              <RotateCcw size={13} aria-hidden="true" />
+              <span>Try again</span>
             </Button>
           </div>
         )}
@@ -127,9 +219,17 @@ export function RewriteColumn() {
         {hasResult && (
           <div
             id="out"
-            className="font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] max-w-[62ch] text-ink whitespace-pre-wrap flex-1"
+            className="font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] max-w-[62ch] text-ink flex-1 min-h-[280px]"
           >
-            <p>{rewriteText}</p>
+            {view === "tracked" ? renderTrackedDiff() : (
+              <p className="whitespace-pre-wrap">{rewriteText}</p>
+            )}
+
+            {nonEnglishNotice && (
+              <p className="mt-4 text-[13px] text-muted font-ui select-none italic">
+                I’m human is tuned for English.
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -147,8 +247,14 @@ export function RewriteColumn() {
             size="sm"
             onClick={handleCopy}
             id="copy"
+            className="gap-1.5"
           >
-            {copyLabel}
+            {copyLabel === "Copied" ? (
+              <Check size={13} className="text-accent" aria-hidden="true" />
+            ) : (
+              <Copy size={13} aria-hidden="true" />
+            )}
+            <span>{copyLabel}</span>
           </Button>
         )}
       </div>

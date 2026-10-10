@@ -4,8 +4,9 @@
  * BEST-EFFORT NOTICE:
  * In serverless environments (e.g. Vercel, AWS Lambda), this rate limiter
  * operates within the memory space of each warm serverless function instance.
- * It provides effective per-instance throttling to prevent abuse without
- * requiring an external database or Redis connection.
+ * It provides effective, best-effort per-instance throttling to prevent abuse
+ * without requiring an external database or Redis connection. Memory is strictly
+ * bounded so old entries are pruned and cannot grow without bound.
  */
 
 interface RateLimitRecord {
@@ -14,6 +15,7 @@ interface RateLimitRecord {
 
 const WINDOW_MINUTE_MS = 60 * 1000;
 const WINDOW_DAY_MS = 24 * 60 * 60 * 1000;
+const MAX_IP_ENTRIES = 5000;
 
 export const RATE_LIMIT_MINUTE = 8;
 export const RATE_LIMIT_DAY = 60;
@@ -31,6 +33,23 @@ export function checkRateLimit(ip: string): RateLimitResult {
   const now = Date.now();
   const cutoffDay = now - WINDOW_DAY_MS;
   const cutoffMinute = now - WINDOW_MINUTE_MS;
+
+  // Bound memory: if cache size exceeds limit, prune stale entries
+  if (ipStore.size > MAX_IP_ENTRIES) {
+    for (const [storedIp, rec] of ipStore.entries()) {
+      rec.timestamps = rec.timestamps.filter((ts) => ts > cutoffDay);
+      if (rec.timestamps.length === 0) {
+        ipStore.delete(storedIp);
+      }
+    }
+    // If still oversized after pruning, remove the oldest map entries
+    if (ipStore.size > MAX_IP_ENTRIES) {
+      const keysToDelete = Array.from(ipStore.keys()).slice(0, 500);
+      for (const k of keysToDelete) {
+        ipStore.delete(k);
+      }
+    }
+  }
 
   // Retrieve or initialize IP record
   let record = ipStore.get(ip);

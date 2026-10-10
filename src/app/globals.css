@@ -85,8 +85,8 @@
   --color-del: var(--del);
   --color-del-bg: var(--del-bg);
 
-  --font-ui: var(--font-ui), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-text: var(--font-text), Georgia, "Times New Roman", serif;
+  --font-ui: "Hanken Grotesk", var(--font-ui), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-text: "Source Serif 4", var(--font-text), Georgia, "Times New Roman", serif;
 
   --radius-workspace: 10px;
   --radius-control: 6px;

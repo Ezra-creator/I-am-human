@@ -1,0 +1,14 @@
+{
+  "text": "Here is the cleaned human version with varied rhythm and authentic phrasing.",
+  "delimiter": "---I_AM_HUMAN_NOTES---",
+  "notes": [
+    {
+      "title": "Removed stock opener",
+      "detail": "Eliminated repetitive introductory phrase."
+    },
+    {
+      "title": "Varied sentence length",
+      "detail": "Balanced short and long sentences."
+    }
+  ]
+}

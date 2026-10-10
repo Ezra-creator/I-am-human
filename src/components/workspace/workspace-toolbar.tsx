@@ -18,6 +18,9 @@ import { Segmented } from "@/components/ui/segmented";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { useLiveQuery } from "dexie-react-hooks";
+import { getDb } from "@/lib/db";
+import { toast } from "@/lib/toast";
 
 const STRENGTH_OPTIONS = [
   {
@@ -51,6 +54,37 @@ export function WorkspaceToolbar() {
     runRewrite,
     stopRewrite,
   } = useWorkspaceStore();
+
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const db = React.useMemo(() => (mounted ? getDb() : null), [mounted]);
+  const customVoices = useLiveQuery(
+    async () => {
+      if (!db) return [];
+      return await db.voices.orderBy("createdAt").toArray();
+    },
+    [db],
+    []
+  );
+
+  // If a selected custom voice was deleted from IndexedDB, fallback to neutral and show a toast
+  React.useEffect(() => {
+    if (!mounted || customVoices === undefined) return;
+    const isPreset = voiceId === "neutral" || voiceId === "conversational";
+    if (!isPreset) {
+      const exists = customVoices.some((v) => v.id === voiceId);
+      if (!exists) {
+        setVoiceId("neutral");
+        toast({
+          title: "Voice deleted",
+          description: "Selected voice was deleted. Switched to Neutral professional.",
+        });
+      }
+    }
+  }, [mounted, customVoices, voiceId, setVoiceId]);
 
   const isMac = React.useSyncExternalStore(
     () => () => {},
@@ -105,6 +139,16 @@ export function WorkspaceToolbar() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            {customVoices && customVoices.length > 0 && (
+              <SelectGroup>
+                <SelectLabel>Your voices</SelectLabel>
+                {customVoices.map((v) => (
+                  <SelectItem key={v.id} value={v.id}>
+                    {v.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            )}
             {INITIAL_VOICE_GROUPS.map((group) => (
               <SelectGroup key={group.groupName}>
                 <SelectLabel>{group.groupName}</SelectLabel>

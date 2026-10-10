@@ -21,7 +21,7 @@ export function Header() {
         <Brand />
 
         {/* Desktop / Tablet Navigation (> 680px) */}
-        <div className="hidden min-[681px]:flex items-center gap-4">
+        <div className="hidden min-[681px]:flex items-center">
           <nav aria-label="Primary" className="flex items-center gap-1 font-ui text-[14px]">
             {NAV_ITEMS.map((item) => {
               const isActive =
@@ -47,14 +47,6 @@ export function Header() {
               );
             })}
           </nav>
-
-          {/* Key-status indicator slot for Phase 6 */}
-          <div
-            id="key-status-slot"
-            data-slot="key-status"
-            className="w-[30px] h-[30px] flex items-center justify-center shrink-0"
-            aria-label="API key status"
-          />
         </div>
       </div>
     </header>
