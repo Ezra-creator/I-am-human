@@ -142,6 +142,7 @@ export async function POST(req: NextRequest) {
     const systemPrompt = buildSystemPrompt(parsedBody.strength, parsedBody.voice);
     const maxTokens = estimateMaxTokens(parsedBody.text);
 
+    let streamError: unknown = null;
     const streamResult = streamText({
       model,
       system: systemPrompt,
@@ -149,10 +150,101 @@ export async function POST(req: NextRequest) {
       temperature: 0.7,
       maxOutputTokens: maxTokens,
       abortSignal: req.signal,
+      onError: ({ error }) => {
+        streamError = error;
+      },
     });
 
-    console.log(`[api/rewrite] status: 200, duration: ${Date.now() - startTime}ms (streaming started)`);
-    return streamResult.toTextStreamResponse();
+    const textReader = streamResult.textStream.getReader();
+    const firstRead = await textReader.read();
+
+    if (streamError) {
+      const errorObj = streamError as {
+        statusCode?: number;
+        responseHeaders?: Record<string, string>;
+        message?: string;
+      };
+
+      const status = errorObj?.statusCode || 500;
+      const msg = errorObj?.message || "";
+
+      if (status === 404 || msg.toLowerCase().includes("not found")) {
+        return jsonError(
+          "UPSTREAM_ERROR",
+          `The configured model was not found: ${modelId}`,
+          404,
+          startTime
+        );
+      }
+
+      if (status === 429 || msg.toLowerCase().includes("rate limit")) {
+        const retryAfter = errorObj?.responseHeaders?.["retry-after"] || "20";
+        return jsonError(
+          "UPSTREAM_RATE_LIMITED",
+          `Groq is busy right now. Try again in about ${retryAfter} seconds.`,
+          429,
+          startTime,
+          { "Retry-After": retryAfter }
+        );
+      }
+
+      if (status === 401 || msg.toLowerCase().includes("api key") || msg.toLowerCase().includes("unauthorized")) {
+        return jsonError(
+          "UPSTREAM_ERROR",
+          "Invalid Groq API key.",
+          401,
+          startTime
+        );
+      }
+
+      return jsonError(
+        "UPSTREAM_ERROR",
+        "Could not reach Groq servers. Please try again shortly.",
+        status >= 400 && status < 600 ? status : 502,
+        startTime
+      );
+    }
+
+    if (firstRead.done && !firstRead.value) {
+      return jsonError(
+        "UPSTREAM_ERROR",
+        "The model returned no text. Try again.",
+        502,
+        startTime
+      );
+    }
+
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const encoder = new TextEncoder();
+        if (firstRead.value) {
+          controller.enqueue(encoder.encode(firstRead.value));
+        }
+        try {
+          while (true) {
+            const { done, value } = await textReader.read();
+            if (done) break;
+            if (value) {
+              controller.enqueue(encoder.encode(value));
+            }
+          }
+          controller.close();
+        } catch (err) {
+          controller.error(err);
+        }
+      },
+      cancel() {
+        textReader.cancel();
+      },
+    });
+
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+      },
+    });
   } catch (err: unknown) {
     const errorObj = err as {
       statusCode?: number;

@@ -68,6 +68,19 @@ function parseNotesJson(rawJson: string): RewriteNote[] {
   return [];
 }
 
+function findDelimiter(text: string): { index: number; length: number } {
+  const primaryIdx = text.indexOf(NOTES_DELIMITER);
+  if (primaryIdx !== -1) {
+    return { index: primaryIdx, length: NOTES_DELIMITER.length };
+  }
+  const fallback = "---I_AM_HUMAN_NOTES---";
+  const fallbackIdx = text.indexOf(fallback);
+  if (fallbackIdx !== -1) {
+    return { index: fallbackIdx, length: fallback.length };
+  }
+  return { index: -1, length: 0 };
+}
+
 /**
  * Real streaming client connecting to /api/rewrite
  */
@@ -149,28 +162,34 @@ export async function startRewrite(
     fullStreamText += chunk;
 
     // Check if delimiter has appeared yet
-    const delimiterIndex = fullStreamText.indexOf(NOTES_DELIMITER);
-    if (delimiterIndex === -1) {
+    const delim = findDelimiter(fullStreamText);
+    if (delim.index === -1) {
       // Entire text so far is rewrite text
       request.onPartial?.(fullStreamText);
     } else {
       // Delimiter reached: send only the rewrite portion
-      const rewritePortion = fullStreamText.slice(0, delimiterIndex).trim();
+      const rewritePortion = fullStreamText.slice(0, delim.index).trim();
       request.onPartial?.(rewritePortion);
     }
   }
 
   // 5. Final output splitting & notes parsing
-  const delimiterIndex = fullStreamText.indexOf(NOTES_DELIMITER);
-  if (delimiterIndex === -1) {
-    return {
-      rewrite: fullStreamText.trim(),
-      notes: [],
-    };
+  const delim = findDelimiter(fullStreamText);
+  let finalRewrite = "";
+  let rawNotes = "";
+
+  if (delim.index === -1) {
+    finalRewrite = fullStreamText.trim();
+  } else {
+    finalRewrite = fullStreamText.slice(0, delim.index).trim();
+    rawNotes = fullStreamText.slice(delim.index + delim.length);
   }
 
-  const finalRewrite = fullStreamText.slice(0, delimiterIndex).trim();
-  const rawNotes = fullStreamText.slice(delimiterIndex + NOTES_DELIMITER.length);
+  // Ensure an empty model response produces a clear error, not a blank UI
+  if (!finalRewrite) {
+    throw new RewriteError("The model returned no text. Try again.", "EMPTY_RESPONSE");
+  }
+
   const parsedNotes = parseNotesJson(rawNotes);
 
   return {

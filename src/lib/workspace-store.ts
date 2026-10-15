@@ -231,7 +231,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       }
     } catch (err: unknown) {
       if (controller.signal.aborted) {
-        set({ status: "idle", abortController: null });
+        if (get().result?.rewrite) {
+          set({ status: "done", mode: "reviewing", abortController: null });
+        } else {
+          set({ status: "idle", abortController: null });
+        }
         return;
       }
 
@@ -249,11 +253,15 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   stopRewrite: () => {
-    const { abortController } = get();
+    const { abortController, result } = get();
     if (abortController) {
       abortController.abort();
     }
-    set({ status: "idle", abortController: null });
+    if (result?.rewrite) {
+      set({ status: "done", mode: "reviewing", abortController: null });
+    } else {
+      set({ status: "idle", abortController: null });
+    }
   },
 
   restoreHistoryEntry: (entry: HistoryEntry) => {

@@ -1,7 +1,7 @@
 import { AI_PHRASES } from "@/data/ai-phrases";
 import { type EditStrength } from "./rewrite-client";
 
-export const NOTES_DELIMITER = "---I_AM_HUMAN_NOTES---";
+export const NOTES_DELIMITER = "<<<NOTES>>>";
 
 export type VoiceInput =
   | { kind: "preset"; id: "neutral" | "conversational" }
