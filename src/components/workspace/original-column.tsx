@@ -171,7 +171,7 @@ export function OriginalColumn() {
               className={cn(
                 "w-full flex-1 max-w-[62ch] min-h-[220px] sm:min-h-[280px] bg-transparent border-0 outline-none resize-none p-0",
                 "font-text text-[16px] sm:text-[18px] leading-[1.75] text-ink placeholder:text-muted/60",
-                "focus-visible:outline-none break-words [overflow-wrap:anywhere]"
+                "focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 break-words [overflow-wrap:anywhere]"
               )}
             />
           </>

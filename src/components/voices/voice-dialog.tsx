@@ -226,7 +226,7 @@ export function VoiceDialog({
                       className={cn(
                         "w-full bg-transparent border-0 outline-none resize-y p-0",
                         "font-text text-[15px] leading-[1.65] text-ink placeholder:text-muted/60",
-                        "focus-visible:outline-none"
+                        "focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                       )}
                     />
                   </div>
