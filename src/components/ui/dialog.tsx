@@ -34,14 +34,14 @@ export const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 w-[calc(100%-24px)] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-[10px] border border-line bg-panel p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] outline-none duration-150 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 max-h-[90vh] overflow-y-auto",
+        "fixed left-1/2 top-1/2 z-50 w-[calc(100%-20px)] sm:w-[calc(100%-32px)] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-[10px] border border-line bg-panel p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] outline-none duration-150 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 max-h-[calc(100dvh-24px)] overflow-y-auto",
         className
       )}
       {...props}
     >
       {children}
       <DialogPrimitive.Close
-        className="absolute right-4 top-4 rounded-[4px] p-1 text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-1 transition-colors duration-150 cursor-pointer"
+        className="absolute right-3 top-3 sm:right-4 sm:top-4 rounded-[4px] p-1.5 text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-1 transition-colors duration-150 cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
         aria-label="Close dialog"
       >
         <X className="h-4 w-4" strokeWidth={1.5} />

@@ -229,7 +229,7 @@ export default function SettingsPage() {
               Choose your preferred interface theme.
             </p>
           </div>
-          <div>
+          <div className="overflow-x-auto max-w-full">
             <Segmented
               id="theme-select"
               aria-label="Appearance theme"
@@ -246,7 +246,7 @@ export default function SettingsPage() {
             <Shield size={16} />
             How your text is handled
           </h2>
-          <p className="text-[13.5px] text-muted leading-relaxed max-w-2xl">
+          <p className="text-[13.5px] text-muted leading-relaxed max-w-2xl break-words [overflow-wrap:anywhere]">
             When you press Rewrite, your text and a short style summary are sent to Groq to produce the rewrite. This app doesn’t store your text on a server or keep logs of it. Your history and voices are saved in this browser only. Groq’s own handling of data depends on its terms, so don’t paste anything confidential.
           </p>
           <div className="pt-1">
@@ -254,7 +254,7 @@ export default function SettingsPage() {
               href="https://groq.com/privacy-policy/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] text-accent hover:underline font-medium inline-flex items-center gap-1.5"
+              className="text-[13px] text-accent hover:underline font-medium inline-flex items-center gap-1.5 min-h-[36px]"
             >
               <span>View Groq Privacy Policy</span>
               <ArrowRight size={13} aria-hidden="true" />
@@ -271,13 +271,13 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={handleExport}
-              className="gap-1.5"
+              className="gap-1.5 w-full sm:w-auto h-11 sm:h-9"
             >
               <Download size={14} />
               <span>Export everything</span>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
               variant="ghost"
               size="sm"
               onClick={() => fileInputRef.current?.click()}
-              className="gap-1.5"
+              className="gap-1.5 w-full sm:w-auto h-11 sm:h-9"
             >
               <Upload size={14} />
               <span>Import backup</span>
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                 setDeleteConfirmText("");
                 setDeleteDialogOpen(true);
               }}
-              className="text-del hover:text-del gap-1.5 ml-auto"
+              className="text-del hover:text-del gap-1.5 sm:ml-auto w-full sm:w-auto h-11 sm:h-9"
             >
               <Trash2 size={14} />
               <span>Delete all local data</span>
@@ -318,7 +318,7 @@ export default function SettingsPage() {
           </div>
 
           {importError && (
-            <p role="alert" className="text-[13px] text-del flex items-center gap-1.5 pt-1">
+            <p role="alert" className="text-[13px] text-del flex items-center gap-1.5 pt-1 break-words">
               <AlertTriangle size={13} />
               {importError}
             </p>
@@ -346,7 +346,7 @@ export default function SettingsPage() {
               value={deleteConfirmText}
               onChange={(e) => setDeleteConfirmText(e.target.value)}
               placeholder="delete"
-              className="w-full h-9 px-3 rounded-[6px] bg-panel border border-line text-[13.5px] text-ink font-mono outline-none focus-visible:ring-1 focus-visible:ring-del"
+              className="w-full h-11 sm:h-9 px-3 rounded-[6px] bg-panel border border-line text-[14px] text-ink font-mono outline-none focus-visible:ring-1 focus-visible:ring-del"
             />
           </div>
 
@@ -356,6 +356,7 @@ export default function SettingsPage() {
               variant="ghost"
               size="md"
               onClick={() => setDeleteDialogOpen(false)}
+              className="w-full sm:w-auto h-11 sm:h-9"
             >
               Cancel
             </Button>
@@ -365,7 +366,7 @@ export default function SettingsPage() {
               size="md"
               disabled={deleteConfirmText.trim().toLowerCase() !== "delete"}
               onClick={handleDeleteAllLocalData}
-              className="bg-del hover:brightness-110 text-white disabled:opacity-40"
+              className="bg-del hover:brightness-110 text-white disabled:opacity-40 w-full sm:w-auto h-11 sm:h-9"
             >
               Delete all data
             </Button>

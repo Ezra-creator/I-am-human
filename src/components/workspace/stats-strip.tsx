@@ -45,7 +45,7 @@ export function StatsStrip() {
   return (
     <div className="border-t border-line bg-panel/30 font-ui select-none">
       {/* Primary stats strip */}
-      <div className="flex items-center gap-x-5 gap-y-2 px-5 md:px-6 py-3 text-[13px] text-muted flex-wrap">
+      <div className="flex items-center gap-x-4 sm:gap-x-5 gap-y-2 px-3.5 sm:px-5 md:px-6 py-2.5 sm:py-3 text-[12.5px] sm:text-[13px] text-muted flex-wrap">
         <span>
           <strong className="font-semibold text-ink">{originalWords}</strong>{" "}
           {originalWords === 1 ? "word" : "words"} in the original
@@ -53,19 +53,19 @@ export function StatsStrip() {
 
         {hasResult && (
           <>
-            <span className="text-line" aria-hidden="true">·</span>
+            <span className="hidden sm:inline text-line" aria-hidden="true">·</span>
             <span>
               <strong className="font-semibold text-ink">{rewriteWords}</strong>{" "}
               {rewriteWords === 1 ? "word" : "words"} in the rewrite
             </span>
 
-            <span className="text-line" aria-hidden="true">·</span>
+            <span className="hidden sm:inline text-line" aria-hidden="true">·</span>
             <span>
               <strong className="font-semibold text-ink">{stockRemoved}</strong>{" "}
               stock {stockRemoved === 1 ? "phrase" : "phrases"} removed
             </span>
 
-            <span className="text-line" aria-hidden="true">·</span>
+            <span className="hidden sm:inline text-line" aria-hidden="true">·</span>
             <div className="flex items-center gap-1.5">
               {meaningDiff?.allKept ? (
                 <span className="text-ink flex items-center gap-1 font-medium">
@@ -95,7 +95,7 @@ export function StatsStrip() {
               </Tooltip>
             </div>
 
-            <span className="text-line" aria-hidden="true">·</span>
+            <span className="hidden sm:inline text-line" aria-hidden="true">·</span>
             <span>
               Reading time{" "}
               <strong className="font-semibold text-ink">{readingTimeSec}</strong> sec
@@ -109,7 +109,7 @@ export function StatsStrip() {
         <div
           role="region"
           aria-label="Meaning consistency differences"
-          className="px-5 md:px-6 py-2.5 bg-del-bg/30 border-t border-line text-[12.5px] flex items-center gap-3 flex-wrap"
+          className="px-3.5 sm:px-5 md:px-6 py-2.5 bg-del-bg/30 border-t border-line text-[12.5px] flex items-center gap-2 sm:gap-3 flex-wrap"
         >
           <span className="font-medium text-del shrink-0">Check these:</span>
           <div className="flex items-center gap-2 flex-wrap">

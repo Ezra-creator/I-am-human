@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="w-full border-t border-line py-5 px-4 text-center font-ui text-[12px] text-muted">
-      <div className="max-w-[1280px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+    <footer className="w-full border-t border-line py-5 px-3 sm:px-4 md:px-6 text-center font-ui text-[12px] text-muted">
+      <div className="max-w-[1280px] min-[1920px]:max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="select-none">
           I’m human — Natural rhythm and personal voice for AI drafts.
         </p>

@@ -45,12 +45,12 @@ export function RhythmChart({ originalText, rewriteText }: RhythmChartProps) {
 
       <div className="space-y-3">
         {/* Before row */}
-        <div className="flex items-end gap-3" role="figure" aria-label={before.textAlternative}>
-          <span className="text-[11.5px] text-muted w-11 shrink-0 font-medium select-none pb-1">
+        <div className="flex items-end gap-2 sm:gap-3" role="figure" aria-label={before.textAlternative}>
+          <span className="text-[11.5px] text-muted w-10 sm:w-11 shrink-0 font-medium select-none pb-1">
             Before
           </span>
           <div
-            className="flex items-end gap-[5px] h-[56px] flex-1 overflow-x-auto pb-0.5"
+            className="flex items-end gap-[2px] sm:gap-[4px] h-[56px] flex-1 overflow-x-auto pb-0.5"
             tabIndex={0}
             aria-label={before.textAlternative}
           >
@@ -61,7 +61,7 @@ export function RhythmChart({ originalText, rewriteText }: RhythmChartProps) {
                 <div
                   key={`b-${idx}`}
                   style={{ height: `${heightPx}px` }}
-                  className="w-[6px] shrink-0 bg-line rounded-t-[2px] transition-all hover:brightness-90"
+                  className="flex-1 min-w-[2px] sm:min-w-[3px] max-w-[8px] bg-line rounded-t-[2px] transition-all hover:brightness-90"
                   title={`Sentence ${idx + 1}: ${len} words`}
                   aria-hidden="true"
                 />
@@ -71,12 +71,12 @@ export function RhythmChart({ originalText, rewriteText }: RhythmChartProps) {
         </div>
 
         {/* After row */}
-        <div className="flex items-end gap-3" role="figure" aria-label={after.textAlternative}>
-          <span className="text-[11.5px] text-accent w-11 shrink-0 font-medium select-none pb-1">
+        <div className="flex items-end gap-2 sm:gap-3" role="figure" aria-label={after.textAlternative}>
+          <span className="text-[11.5px] text-accent w-10 sm:w-11 shrink-0 font-medium select-none pb-1">
             After
           </span>
           <div
-            className="flex items-end gap-[5px] h-[56px] flex-1 overflow-x-auto pb-0.5"
+            className="flex items-end gap-[2px] sm:gap-[4px] h-[56px] flex-1 overflow-x-auto pb-0.5"
             tabIndex={0}
             aria-label={after.textAlternative}
           >
@@ -87,7 +87,7 @@ export function RhythmChart({ originalText, rewriteText }: RhythmChartProps) {
                 <div
                   key={`a-${idx}`}
                   style={{ height: `${heightPx}px` }}
-                  className="w-[6px] shrink-0 bg-accent rounded-t-[2px] transition-all hover:brightness-110"
+                  className="flex-1 min-w-[2px] sm:min-w-[3px] max-w-[8px] bg-accent rounded-t-[2px] transition-all hover:brightness-110"
                   title={`Sentence ${idx + 1}: ${len} words`}
                   aria-hidden="true"
                 />

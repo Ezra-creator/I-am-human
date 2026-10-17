@@ -95,7 +95,7 @@ export function RewriteColumn() {
     }
 
     return (
-      <div className="whitespace-pre-wrap leading-[1.75]">
+      <div className="whitespace-pre-wrap leading-[1.75] break-words [overflow-wrap:anywhere]">
         {diffSegments.map((seg, idx) => {
           const isHighlight =
             highlightTerm &&
@@ -106,7 +106,7 @@ export function RewriteColumn() {
               <ins
                 key={`diff-${idx}`}
                 className={cn(
-                  "text-accent bg-accent-soft border-b-2 border-accent rounded-[2px] px-0.5 no-underline font-text inline transition-colors",
+                  "text-accent bg-accent-soft border-b-2 border-accent rounded-[2px] px-0.5 no-underline font-text inline transition-colors break-words [overflow-wrap:anywhere]",
                   isHighlight && "ring-2 ring-accent"
                 )}
               >
@@ -121,7 +121,7 @@ export function RewriteColumn() {
               <del
                 key={`diff-${idx}`}
                 className={cn(
-                  "text-del bg-del-bg line-through rounded-[2px] px-0.5 font-text inline transition-colors",
+                  "text-del bg-del-bg line-through rounded-[2px] px-0.5 font-text inline transition-colors break-words [overflow-wrap:anywhere]",
                   isHighlight && "ring-2 ring-del"
                 )}
               >
@@ -134,7 +134,7 @@ export function RewriteColumn() {
           return (
             <span
               key={`diff-${idx}`}
-              className={cn(isHighlight && "bg-amber-200 dark:bg-amber-800 rounded-[2px]")}
+              className={cn(isHighlight && "bg-amber-200 dark:bg-amber-800 rounded-[2px]", "break-words [overflow-wrap:anywhere]")}
             >
               {seg.value}
             </span>
@@ -145,8 +145,8 @@ export function RewriteColumn() {
   };
 
   return (
-    <section aria-labelledby="h-out" className="p-5 md:px-6 md:py-5 min-w-0 flex flex-col">
-      <div className="flex items-center justify-between min-h-[30px] mb-3 select-none">
+    <section aria-labelledby="h-out" className="p-3.5 sm:p-5 min-[1181px]:p-6 min-w-0 flex flex-col">
+      <div className="flex items-center justify-between min-h-[30px] mb-3 select-none flex-wrap gap-2">
         <h2 id="h-out" className="text-[13px] font-semibold text-muted font-ui">
           Rewrite
         </h2>
@@ -162,9 +162,9 @@ export function RewriteColumn() {
       </div>
 
       {/* Main body depending on status */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {status === "idle" && (
-          <div className="py-8 max-w-md select-none">
+          <div className="py-6 sm:py-8 max-w-md select-none">
             <p className="font-ui font-medium text-[15px] text-ink">
               Your rewrite appears here.
             </p>
@@ -175,7 +175,7 @@ export function RewriteColumn() {
         )}
 
         {status === "running" && (
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col min-w-0">
             <p
               role="status"
               aria-live="polite"
@@ -188,7 +188,7 @@ export function RewriteColumn() {
               <span>Rewriting…</span>
             </p>
             {rewriteText && (
-              <div className="font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] max-w-[62ch] text-ink whitespace-pre-wrap flex-1">
+              <div className="font-text text-[16px] sm:text-[18px] leading-[1.75] max-w-[62ch] text-ink whitespace-pre-wrap flex-1 break-words [overflow-wrap:anywhere]">
                 <p>{rewriteText}</p>
               </div>
             )}
@@ -219,10 +219,10 @@ export function RewriteColumn() {
         {hasResult && (
           <div
             id="out"
-            className="font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] max-w-[62ch] text-ink flex-1 min-h-[280px]"
+            className="font-text text-[16px] sm:text-[18px] leading-[1.75] max-w-[62ch] text-ink flex-1 min-h-[220px] sm:min-h-[280px] break-words [overflow-wrap:anywhere]"
           >
             {view === "tracked" ? renderTrackedDiff() : (
-              <p className="whitespace-pre-wrap">{rewriteText}</p>
+              <p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{rewriteText}</p>
             )}
 
             {nonEnglishNotice && (
@@ -235,7 +235,7 @@ export function RewriteColumn() {
       </div>
 
       {/* Footer row */}
-      <div className="flex items-center justify-between gap-2.5 mt-5 text-[13px] font-ui pt-3 border-t border-transparent select-none">
+      <div className="flex items-center justify-between gap-2.5 mt-5 text-[13px] font-ui pt-3 border-t border-transparent select-none flex-wrap">
         <span className="text-muted">
           {hasResult ? `${rewriteWords} ${rewriteWords === 1 ? "word" : "words"}` : ""}
         </span>
@@ -247,7 +247,7 @@ export function RewriteColumn() {
             size="sm"
             onClick={handleCopy}
             id="copy"
-            className="gap-1.5"
+            className="gap-1.5 h-8 px-2.5"
           >
             {copyLabel === "Copied" ? (
               <Check size={13} className="text-accent" aria-hidden="true" />

@@ -31,8 +31,8 @@ export function Segmented<T extends string = string>({
   disabled = false,
 }: SegmentedProps<T>) {
   const sizeStyles = {
-    sm: "px-2.5 py-1 text-[12px]",
-    md: "px-3.5 py-[7px] text-[13px] md:text-[14px]",
+    sm: "px-2 sm:px-2.5 py-1 text-[11.5px] sm:text-[12px]",
+    md: "px-2 min-[340px]:px-2.5 sm:px-3.5 py-[6px] sm:py-[7px] text-[11.5px] min-[340px]:text-[12.5px] sm:text-[13px] md:text-[14px]",
   };
 
   return (
@@ -41,7 +41,7 @@ export function Segmented<T extends string = string>({
       role="group"
       aria-label={ariaLabel}
       className={cn(
-        "inline-flex border border-line rounded-[6px] overflow-hidden bg-panel",
+        "inline-flex border border-line rounded-[6px] overflow-hidden bg-panel max-w-full",
         disabled && "opacity-50 pointer-events-none",
         className
       )}
@@ -59,7 +59,7 @@ export function Segmented<T extends string = string>({
             disabled={isDisabled}
             onClick={() => !isDisabled && onChange(option.value)}
             className={cn(
-              "bg-transparent border-0 cursor-pointer font-ui transition-colors duration-150 select-none",
+              "bg-transparent border-0 cursor-pointer font-ui transition-colors duration-150 select-none whitespace-nowrap shrink",
               "focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[-2px] focus-visible:z-10",
               index > 0 && "border-l border-line",
               sizeStyles[size],

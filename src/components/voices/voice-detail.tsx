@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, Copy, Edit2, Trash2 } from "lucide-react";
+import { X, Copy, Edit2, Trash2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   type VoiceProfile,
@@ -83,24 +83,37 @@ export function VoiceDetail({
     <div
       role="region"
       aria-label={`Voice details for ${voice.name}`}
-      className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] bg-panel border-l border-line shadow-[0_4px_30px_rgba(0,0,0,0.1)] flex flex-col font-ui overflow-hidden animate-in slide-in-from-right duration-200"
+      className="fixed inset-0 min-[1021px]:inset-y-0 min-[1021px]:left-auto min-[1021px]:right-0 z-50 w-full min-[1021px]:w-[480px] bg-panel min-[1021px]:border-l border-line shadow-[0_4px_30px_rgba(0,0,0,0.1)] flex flex-col font-ui overflow-hidden animate-in slide-in-from-right duration-200"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-5 border-b border-line shrink-0">
-        <div>
-          <h2 className="text-[17px] font-bold text-ink">{voice.name}</h2>
-          <p className="text-[12.5px] text-muted mt-0.5">
-            {voice.samples.length} {voice.samples.length === 1 ? "sample" : "samples"} · {metrics.totalWords} words
-          </p>
+      <div className="flex items-center justify-between p-4 sm:p-5 border-b border-line shrink-0 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {/* Back button visible below 1021px */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="min-[1021px]:hidden p-1.5 -ml-1 text-muted hover:text-ink rounded-[4px] cursor-pointer flex items-center gap-1 text-[13px] font-medium shrink-0"
+            aria-label="Back to voices"
+          >
+            <ArrowLeft size={18} strokeWidth={1.5} />
+            <span className="hidden min-[360px]:inline">Back</span>
+          </button>
+
+          <div className="min-w-0">
+            <h2 className="text-[16px] sm:text-[17px] font-bold text-ink truncate">{voice.name}</h2>
+            <p className="text-[12px] sm:text-[12.5px] text-muted mt-0.5 truncate">
+              {voice.samples.length} {voice.samples.length === 1 ? "sample" : "samples"} · {metrics.totalWords} words
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => onEdit(voice)}
-            className="gap-1.5"
+            className="gap-1.5 h-8 px-2.5"
           >
             <Edit2 size={13} strokeWidth={1.5} />
             <span>Edit</span>
@@ -108,7 +121,7 @@ export function VoiceDetail({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-muted hover:text-ink rounded-[4px] cursor-pointer"
+            className="p-1.5 text-muted hover:text-ink rounded-[4px] cursor-pointer hidden min-[1021px]:block"
             aria-label="Close voice details"
           >
             <X size={18} strokeWidth={1.5} />

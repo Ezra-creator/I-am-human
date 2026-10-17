@@ -142,16 +142,16 @@ export function VoiceDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <form onSubmit={handleSave}>
-          <DialogHeader>
+      <DialogContent className="max-w-2xl max-[680px]:w-full max-[680px]:h-[100dvh] max-[680px]:max-h-[100dvh] max-[680px]:rounded-none max-[680px]:top-0 max-[680px]:left-0 max-[680px]:translate-x-0 max-[680px]:translate-y-0 max-[680px]:p-4 max-[680px]:border-none flex flex-col">
+        <form onSubmit={handleSave} className="flex-1 flex flex-col justify-between overflow-hidden">
+          <DialogHeader className="shrink-0 pr-6">
             <DialogTitle>{voiceToEdit ? "Edit voice" : "Add voice"}</DialogTitle>
             <DialogDescription>
               Add examples of your writing. I’m human analyzes sentence rhythm, phrasing habits, and word choices to build a style guide for your rewrites.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 font-ui">
+          <div className="flex-1 overflow-y-auto space-y-4 font-ui pr-1 my-2">
             {/* Name Input */}
             <div>
               <label
@@ -240,14 +240,14 @@ export function VoiceDialog({
               )}
 
               {/* Action row to append sample */}
-              <div className="flex items-center justify-between pt-1">
+              <div className="flex items-center justify-between pt-1 flex-wrap gap-2">
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={handleAddSample}
                   disabled={samples.length >= 20 || isOverCharCap}
-                  className="gap-1.5"
+                  className="gap-1.5 h-9"
                 >
                   <Plus size={14} strokeWidth={1.5} />
                   <span>Add another sample</span>
@@ -267,12 +267,13 @@ export function VoiceDialog({
             </p>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="shrink-0 sticky bottom-0 bg-panel pt-3 pb-[max(6px,env(safe-area-inset-bottom,0px))] border-t border-line mt-auto">
             <Button
               type="button"
               variant="ghost"
               size="md"
               onClick={() => onOpenChange(false)}
+              className="w-full sm:w-auto h-11 sm:h-9"
             >
               Cancel
             </Button>
@@ -282,6 +283,7 @@ export function VoiceDialog({
               size="md"
               disabled={!isValidName || !meetsMinimum || isOverCharCap || isSaving}
               isLoading={isSaving}
+              className="w-full sm:w-auto h-11 sm:h-9"
             >
               {voiceToEdit ? "Save changes" : "Create voice"}
             </Button>

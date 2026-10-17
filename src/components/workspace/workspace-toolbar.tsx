@@ -120,11 +120,11 @@ export function WorkspaceToolbar() {
     <div
       role="toolbar"
       aria-label="Rewrite settings"
-      className="flex flex-wrap items-center gap-x-7 gap-y-3.5 px-5 py-3.5 border-b border-line bg-panel"
+      className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-x-6 sm:gap-y-3.5 px-3.5 sm:px-5 py-3 sm:py-3.5 border-b border-line bg-panel"
     >
       {/* Voice selection */}
-      <div className="flex items-center gap-2.5">
-        <span className="text-[13px] font-medium text-muted font-ui select-none">
+      <div className="flex items-center justify-between sm:justify-start gap-2.5 w-full sm:w-auto">
+        <span className="text-[13px] font-medium text-muted font-ui select-none shrink-0">
           Voice
         </span>
         <Select
@@ -134,7 +134,7 @@ export function WorkspaceToolbar() {
         >
           <SelectTrigger
             aria-label="Voice"
-            className="w-[180px] md:w-[200px]"
+            className="w-[190px] min-[380px]:w-[220px] sm:w-[180px] md:w-[200px]"
           >
             <SelectValue />
           </SelectTrigger>
@@ -164,44 +164,48 @@ export function WorkspaceToolbar() {
       </div>
 
       {/* Edit strength selection */}
-      <div className="flex items-center gap-2.5">
-        <span className="text-[13px] font-medium text-muted font-ui select-none">
+      <div className="flex items-center justify-between sm:justify-start gap-2.5 w-full sm:w-auto">
+        <span className="text-[13px] font-medium text-muted font-ui select-none shrink-0">
           Edit strength
         </span>
-        <Segmented
-          id="strength"
-          aria-label="Edit strength"
-          options={STRENGTH_OPTIONS}
-          value={strength}
-          onChange={(val) => setStrength(val)}
-          disabled={isRunning}
-        />
+        <div className="overflow-x-auto scrollbar-none max-w-full shrink-0">
+          <Segmented
+            id="strength"
+            aria-label="Edit strength"
+            options={STRENGTH_OPTIONS}
+            value={strength}
+            onChange={(val) => setStrength(val)}
+            disabled={isRunning}
+          />
+        </div>
       </div>
 
       {/* Flexible spacer: hidden under 680px */}
       <div className="flex-1 max-[680px]:hidden" />
 
-      {/* Primary Action Button */}
-      {isRunning ? (
-        <Button
-          type="button"
-          variant="quiet"
-          size="md"
-          onClick={() => stopRewrite()}
-          className="max-[680px]:w-full text-del hover:text-del shrink-0"
-        >
-          Stop
-        </Button>
-      ) : isUnderMin ? (
-        <Tooltip>
-          <TooltipTrigger asChild className="max-[680px]:w-full">
-            <span>{rewriteButton}</span>
-          </TooltipTrigger>
-          <TooltipContent>Add at least 40 characters.</TooltipContent>
-        </Tooltip>
-      ) : (
-        rewriteButton
-      )}
+      {/* Primary Action Button (desktop / tablet > 680px; on <= 680px visible in sticky bottom bar) */}
+      <div className="hidden min-[681px]:flex items-center shrink-0">
+        {isRunning ? (
+          <Button
+            type="button"
+            variant="quiet"
+            size="md"
+            onClick={() => stopRewrite()}
+            className="text-del hover:text-del shrink-0"
+          >
+            Stop
+          </Button>
+        ) : isUnderMin ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>{rewriteButton}</span>
+            </TooltipTrigger>
+            <TooltipContent>Add at least 40 characters.</TooltipContent>
+          </Tooltip>
+        ) : (
+          rewriteButton
+        )}
+      </div>
     </div>
   );
 }

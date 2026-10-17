@@ -37,8 +37,8 @@ export function VoiceList({
               onClick={() => onSelectVoice(voice)}
               className="flex-1 cursor-pointer flex flex-col md:flex-row md:items-center gap-2 md:gap-6 min-w-0"
             >
-              <div className="min-w-[180px]">
-                <h3 className="font-semibold text-ink text-[15px] hover:text-accent transition-colors">
+              <div className="min-w-0 sm:min-w-[180px]">
+                <h3 className="font-semibold text-ink text-[15px] hover:text-accent transition-colors break-words">
                   {voice.name}
                 </h3>
                 <span className="text-[12.5px] text-muted block mt-0.5">
@@ -47,7 +47,7 @@ export function VoiceList({
               </div>
 
               {/* Three compact metrics */}
-              <div className="flex items-center gap-4 text-[13px] text-muted flex-wrap">
+              <div className="flex items-center gap-2 sm:gap-4 text-[12.5px] sm:text-[13px] text-muted flex-wrap">
                 <span title="Average sentence length">
                   <b className="font-medium text-ink">{metrics.meanSentenceLength}w</b> avg
                 </span>
@@ -63,7 +63,7 @@ export function VoiceList({
             </div>
 
             {/* Quiet Action Buttons */}
-            <div className="flex items-center gap-1 shrink-0 self-end md:self-auto">
+            <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-end md:self-auto pt-1 sm:pt-0">
               <Button
                 type="button"
                 variant="quiet"
@@ -72,7 +72,7 @@ export function VoiceList({
                   e.stopPropagation();
                   onEditVoice(voice);
                 }}
-                className="gap-1.5 h-8 px-2.5 text-muted hover:text-ink"
+                className="gap-1.5 h-9 sm:h-8 px-3 sm:px-2.5 text-muted hover:text-ink min-w-[44px]"
                 aria-label={`Edit ${voice.name}`}
               >
                 <Edit2 size={13} strokeWidth={1.5} />
@@ -87,7 +87,7 @@ export function VoiceList({
                   e.stopPropagation();
                   onDeleteVoice(voice);
                 }}
-                className="gap-1.5 h-8 px-2.5 text-muted hover:text-del"
+                className="gap-1.5 h-9 sm:h-8 px-3 sm:px-2.5 text-muted hover:text-del min-w-[44px]"
                 aria-label={`Delete ${voice.name}`}
               >
                 <Trash2 size={13} strokeWidth={1.5} />

@@ -81,7 +81,7 @@ export default function VoicesPage() {
               setVoiceToEdit(null);
               setIsAddOpen(true);
             }}
-            className="gap-2 shrink-0 self-start sm:self-auto"
+            className="gap-2 shrink-0 self-start sm:self-auto h-11 sm:h-9"
           >
             <Plus size={16} strokeWidth={2} />
             <span>Add voice</span>

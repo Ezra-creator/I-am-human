@@ -18,7 +18,7 @@ export function NotesColumn() {
     <aside
       aria-labelledby="h-notes"
       className={cn(
-        "p-5 md:px-6 md:py-5 min-w-0 flex flex-col",
+        "p-3.5 sm:p-5 min-[1181px]:p-6 min-w-0 flex flex-col break-words [overflow-wrap:anywhere]",
         "border-line border-t min-[1021px]:border-t-0 min-[1021px]:border-l",
         "max-[1020px]:col-span-full"
       )}

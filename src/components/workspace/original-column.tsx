@@ -119,10 +119,10 @@ export function OriginalColumn() {
   };
 
   return (
-    <section aria-labelledby="h-orig" className="p-5 md:px-6 md:py-5 min-w-0 flex flex-col">
+    <section aria-labelledby="h-orig" className="p-3.5 sm:p-5 min-[1181px]:p-6 min-w-0 flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between min-h-[30px] mb-3 select-none">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between min-h-[30px] mb-3 select-none flex-wrap gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <h2 id="h-orig" className="text-[13px] font-semibold text-muted font-ui">
             Original
           </h2>
@@ -146,7 +146,7 @@ export function OriginalColumn() {
             variant="quiet"
             size="sm"
             onClick={() => setMode("editing")}
-            className="text-muted hover:text-ink text-[12.5px] h-7 px-2"
+            className="text-muted hover:text-ink text-[12.5px] h-8 px-2.5"
           >
             Edit original
           </Button>
@@ -154,7 +154,7 @@ export function OriginalColumn() {
       </div>
 
       {/* Main Column Body */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {mode === "editing" ? (
           <>
             <label htmlFor="original-input" className="sr-only">
@@ -169,22 +169,22 @@ export function OriginalColumn() {
               disabled={isRunning}
               rows={7}
               className={cn(
-                "w-full flex-1 max-w-[62ch] min-h-[280px] bg-transparent border-0 outline-none resize-none p-0",
-                "font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] text-ink placeholder:text-muted/60",
-                "focus-visible:outline-none"
+                "w-full flex-1 max-w-[62ch] min-h-[220px] sm:min-h-[280px] bg-transparent border-0 outline-none resize-none p-0",
+                "font-text text-[16px] sm:text-[18px] leading-[1.75] text-ink placeholder:text-muted/60",
+                "focus-visible:outline-none break-words [overflow-wrap:anywhere]"
               )}
             />
           </>
         ) : (
-          <div className="font-text text-[18px] max-[680px]:text-[17px] leading-[1.75] max-w-[62ch] text-ink flex-1 min-h-[280px]">
+          <div className="font-text text-[16px] sm:text-[18px] leading-[1.75] max-w-[62ch] text-ink flex-1 min-h-[220px] sm:min-h-[280px] break-words [overflow-wrap:anywhere]">
             {renderReviewContent()}
           </div>
         )}
       </div>
 
       {/* Footer row */}
-      <div className="flex items-center gap-2.5 mt-5 text-[13px] font-ui pt-3 border-t border-transparent select-none">
-        <div className="flex-1">
+      <div className="flex items-center gap-2.5 mt-5 text-[13px] font-ui pt-3 border-t border-transparent select-none flex-wrap">
+        <div className="flex-1 min-w-[120px]">
           {isOverLimit ? (
             <span className="text-del font-medium">
               Over the limit by {overBy} {overBy === 1 ? "character" : "characters"}
@@ -197,14 +197,14 @@ export function OriginalColumn() {
         </div>
 
         {mode === "editing" ? (
-          <>
+          <div className="flex items-center gap-1.5 shrink-0">
             <Button
               type="button"
               variant="quiet"
               size="sm"
               onClick={handlePaste}
               disabled={isRunning}
-              className="gap-1.5"
+              className="gap-1.5 h-8 px-2.5"
             >
               <Clipboard size={13} aria-hidden="true" />
               <span>Paste</span>
@@ -215,19 +215,19 @@ export function OriginalColumn() {
               size="sm"
               onClick={clearOriginal}
               disabled={isRunning || !original}
-              className="gap-1.5"
+              className="gap-1.5 h-8 px-2.5"
             >
               <Trash2 size={13} aria-hidden="true" />
               <span>Clear</span>
             </Button>
-          </>
+          </div>
         ) : (
           <Button
             type="button"
             variant="quiet"
             size="sm"
             onClick={() => setMode("editing")}
-            className="gap-1.5"
+            className="gap-1.5 h-8 px-2.5"
           >
             <Edit2 size={13} aria-hidden="true" />
             <span>Edit original</span>

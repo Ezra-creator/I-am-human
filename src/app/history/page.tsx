@@ -185,7 +185,7 @@ export default function HistoryPage() {
             Search history
           </label>
           <Search
-            size={15}
+            size={16}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
           />
           <input
@@ -194,7 +194,7 @@ export default function HistoryPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search original and rewrite text…"
-            className="w-full h-10 pl-9 pr-4 rounded-[8px] bg-panel border border-line text-ink text-[14px] placeholder:text-muted/60 outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            className="w-full h-11 sm:h-10 pl-10 pr-4 rounded-[8px] bg-panel border border-line text-ink text-[14px] placeholder:text-muted/60 outline-none focus-visible:ring-1 focus-visible:ring-accent"
           />
         </div>
       )}
@@ -254,8 +254,8 @@ export default function HistoryPage() {
                       role="listitem"
                       className="p-4 md:px-5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-bg/40 transition-colors"
                     >
-                      <div className="flex-1 min-w-0 pr-4">
-                        <p className="font-text text-[15.5px] text-ink leading-snug line-clamp-2">
+                      <div className="flex-1 min-w-0 pr-0 sm:pr-4">
+                        <p className="font-text text-[15.5px] text-ink leading-snug line-clamp-2 break-words [overflow-wrap:anywhere]">
                           {preview}
                         </p>
                         <p className="text-[12.5px] text-muted font-ui mt-1">
@@ -264,13 +264,13 @@ export default function HistoryPage() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-1 shrink-0 self-end md:self-auto">
+                      <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-end md:self-auto pt-1 sm:pt-0">
                         <Button
                           type="button"
                           variant="quiet"
                           size="sm"
                           onClick={() => handleOpen(entry)}
-                          className="gap-1 h-8 px-2.5 text-muted hover:text-ink text-[12.5px]"
+                          className="gap-1.5 h-9 sm:h-8 px-3 sm:px-2.5 text-muted hover:text-ink text-[13px] sm:text-[12.5px] min-w-[44px]"
                           aria-label="Open rewrite in workspace"
                         >
                           <ExternalLink size={13} />
@@ -282,7 +282,7 @@ export default function HistoryPage() {
                           variant="quiet"
                           size="sm"
                           onClick={() => handleCopy(entry)}
-                          className="gap-1 h-8 px-2.5 text-muted hover:text-ink text-[12.5px]"
+                          className="gap-1.5 h-9 sm:h-8 px-3 sm:px-2.5 text-muted hover:text-ink text-[13px] sm:text-[12.5px] min-w-[44px]"
                           aria-label="Copy rewrite text"
                         >
                           <Copy size={13} />
@@ -294,7 +294,7 @@ export default function HistoryPage() {
                           variant="quiet"
                           size="sm"
                           onClick={() => handleDelete(entry.id)}
-                          className="gap-1 h-8 px-2 text-muted hover:text-del text-[12.5px]"
+                          className="gap-1 h-9 sm:h-8 px-2.5 text-muted hover:text-del text-[13px] sm:text-[12.5px] min-w-[44px]"
                           aria-label="Delete history entry"
                         >
                           <Trash2 size={13} />
