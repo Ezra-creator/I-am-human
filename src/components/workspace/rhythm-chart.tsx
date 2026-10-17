@@ -38,7 +38,7 @@ export function RhythmChart({ originalText, rewriteText }: RhythmChartProps) {
             </button>
           </TooltipTrigger>
           <TooltipContent side="top" className="max-w-xs">
-            Variation is the coefficient of variation (standard deviation divided by mean sentence length). Higher numbers mean more natural rhythm and varied pacing.
+            Sentence variation measures how dynamically your pacing rises and falls. Monotonous AI text tends to cluster around identical lengths; human writing breathes with short punchy lines alongside longer thoughts.
           </TooltipContent>
         </Tooltip>
       </div>

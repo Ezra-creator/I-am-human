@@ -221,7 +221,7 @@ export function VoiceDialog({
                     <textarea
                       value={sample.text}
                       onChange={(e) => handleTextChange(sample.id, e.target.value)}
-                      placeholder="Paste an excerpt of your writing here..."
+                      placeholder="Paste something you’ve written (articles, essays, notes)…"
                       rows={5}
                       className={cn(
                         "w-full bg-transparent border-0 outline-none resize-y p-0",
@@ -263,7 +263,7 @@ export function VoiceDialog({
 
             {/* Privacy notice banner */}
             <p className="text-[12px] text-muted leading-relaxed pt-2 border-t border-line/60">
-              Samples are analyzed in this browser and only a short style summary is sent when rewriting, never the samples themselves.
+              Samples are analyzed directly in this browser; only a concise style guide is transmitted when rewriting, never your raw samples.
             </p>
           </div>
 
@@ -284,8 +284,9 @@ export function VoiceDialog({
               disabled={!isValidName || !meetsMinimum || isOverCharCap || isSaving}
               isLoading={isSaving}
               className="w-full sm:w-auto h-11 sm:h-9"
+              aria-label="Save voice"
             >
-              {voiceToEdit ? "Save changes" : "Create voice"}
+              {voiceToEdit ? "Save changes" : "Save voice"}
             </Button>
           </DialogFooter>
         </form>

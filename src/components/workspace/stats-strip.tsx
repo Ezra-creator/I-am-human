@@ -90,7 +90,7 @@ export function StatsStrip() {
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-xs">
-                  This is a consistency check comparing numbers, dates, quotes, URLs, and entities, not proof that meaning is preserved.
+                  Scans key factual anchors (numbers, dates, quotes, and proper nouns) between drafts to ensure essential details weren’t dropped during rewriting.
                 </TooltipContent>
               </Tooltip>
             </div>

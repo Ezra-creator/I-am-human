@@ -38,7 +38,7 @@ export function Segmented<T extends string = string>({
   return (
     <div
       id={id}
-      role="group"
+      role="radiogroup"
       aria-label={ariaLabel}
       className={cn(
         "inline-flex border border-line rounded-[6px] overflow-hidden bg-panel max-w-full",
@@ -54,8 +54,8 @@ export function Segmented<T extends string = string>({
           <button
             key={option.value}
             type="button"
-            role="button"
-            aria-pressed={isSelected}
+            role="radio"
+            aria-checked={isSelected}
             disabled={isDisabled}
             onClick={() => !isDisabled && onChange(option.value)}
             className={cn(

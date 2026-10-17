@@ -165,7 +165,7 @@ export function OriginalColumn() {
               ref={textareaRef}
               value={original}
               onChange={(e) => setOriginal(e.target.value)}
-              placeholder="Paste or write the text you want to rewrite."
+              placeholder="Paste or write the draft you want to humanize…"
               disabled={isRunning}
               rows={7}
               className={cn(

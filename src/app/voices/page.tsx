@@ -68,7 +68,7 @@ export default function VoicesPage() {
         <div>
           <h1 className="text-[24px] font-bold text-ink tracking-tight">Voices</h1>
           <p className="text-[14.5px] text-muted mt-1 leading-relaxed">
-            Teach I’m human how you write so your rewrites match your authentic voice.
+            Your personal cadence profiles. Add writing samples to capture how you craft sentences, pace ideas, and choose words.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export default function VoicesPage() {
       {!storageBlocked && mounted && voices && voices.length === 0 && (
         <div className="p-10 md:p-14 text-center rounded-[10px] border border-line bg-panel">
           <p className="text-[15px] text-muted leading-relaxed max-w-md mx-auto mb-6">
-            Add something you’ve written and I’m human will learn how you build sentences.
+            No custom voices yet. Provide a few excerpts of your genuine writing and the studio will analyze your rhythm and phrasing to sound authentically like you.
           </p>
           <Button
             type="button"

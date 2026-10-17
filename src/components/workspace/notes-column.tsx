@@ -39,8 +39,8 @@ export function NotesColumn() {
 
       {/* Change notes list or state notices */}
       {status === "idle" && (
-        <p className="text-[13px] text-muted font-ui leading-relaxed">
-          Each edit is explained here after a rewrite.
+        <p className="text-[13px] text-muted/80 font-ui leading-relaxed">
+          Editorial revisions, rhythm comparison, and phrase alterations appear here once rewritten.
         </p>
       )}
 

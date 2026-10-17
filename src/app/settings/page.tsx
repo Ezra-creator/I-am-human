@@ -221,8 +221,7 @@ export default function SettingsPage() {
         {/* Section 1: Appearance */}
         <section className="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-[15px] font-semibold text-ink flex items-center gap-2">
-              <Sun size={16} />
+            <h2 className="text-[15px] font-semibold text-ink">
               Appearance
             </h2>
             <p className="text-[13px] text-muted mt-0.5">
@@ -242,12 +241,11 @@ export default function SettingsPage() {
 
         {/* Section 2: How your text is handled */}
         <section className="py-6 space-y-2">
-          <h2 className="text-[15px] font-semibold text-ink flex items-center gap-2">
-            <Shield size={16} />
+          <h2 className="text-[15px] font-semibold text-ink">
             How your text is handled
           </h2>
           <p className="text-[13.5px] text-muted leading-relaxed max-w-2xl break-words [overflow-wrap:anywhere]">
-            When you press Rewrite, your text and a short style summary are sent to Groq to produce the rewrite. This app doesn’t store your text on a server or keep logs of it. Your history and voices are saved in this browser only. Groq’s own handling of data depends on its terms, so don’t paste anything confidential.
+            Rewrites are processed via stateless API calls with your selected voice descriptor. We operate without user accounts, analytics trackers, or server databases—your writing history and custom voice profiles reside entirely in your local browser storage.
           </p>
           <div className="pt-1">
             <a
@@ -256,7 +254,7 @@ export default function SettingsPage() {
               rel="noopener noreferrer"
               className="text-[13px] text-accent hover:underline font-medium inline-flex items-center gap-1.5 min-h-[36px]"
             >
-              <span>View Groq Privacy Policy</span>
+              <span>Groq Privacy Policy</span>
               <ArrowRight size={13} aria-hidden="true" />
             </a>
           </div>
