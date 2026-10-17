@@ -14,23 +14,7 @@ test.describe("I’m human — Core User Flows", () => {
     });
   });
 
-  test("1. First-visit empty state explanation is visible and dismissible", async ({ page }) => {
-    await page.goto("/");
-    const welcomeGuide = page.getByRole("region", { name: "Welcome guide" });
-    await expect(welcomeGuide).toBeVisible();
-    await expect(welcomeGuide).toContainText("What to paste:");
-    await expect(welcomeGuide).toContainText("How voices work:");
-
-    // Dismiss guide
-    await page.getByRole("button", { name: "Dismiss guide" }).click();
-    await expect(welcomeGuide).not.toBeVisible();
-
-    // Reload and check it remains dismissed
-    await page.reload();
-    await expect(welcomeGuide).not.toBeVisible();
-  });
-
-  test("2. Typing text enables Rewrite button and produces interactive review", async ({ page }) => {
+  test("1. Typing text enables Rewrite button and produces interactive review", async ({ page }) => {
     await page.goto("/");
     const textarea = page.getByLabel("Text to rewrite");
     const rewriteBtn = page.getByRole("button", { name: "Rewrite" });

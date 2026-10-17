@@ -22,15 +22,6 @@ export function Footer() {
           >
             Terms
           </Link>
-          <span className="text-line" aria-hidden="true">·</span>
-          <a
-            href="https://groq.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-ink transition-colors focus-visible:outline-2 focus-visible:outline-accent rounded"
-          >
-            Powered by Groq
-          </a>
         </div>
       </div>
     </footer>

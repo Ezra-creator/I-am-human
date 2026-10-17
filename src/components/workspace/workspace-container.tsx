@@ -7,51 +7,6 @@ import { OriginalColumn } from "./original-column";
 import { RewriteColumn } from "./rewrite-column";
 import { NotesColumn } from "./notes-column";
 import { StatsStrip } from "./stats-strip";
-import { X } from "lucide-react";
-
-function WorkspaceOnboarding() {
-  const [dismissed, setDismissed] = React.useState<boolean | null>(null);
-
-  React.useEffect(() => {
-    try {
-      setDismissed(localStorage.getItem("imhuman-onboarding-dismissed") === "true");
-    } catch {
-      setDismissed(false);
-    }
-  }, []);
-
-  if (dismissed !== false) return null;
-
-  const handleDismiss = () => {
-    setDismissed(true);
-    try {
-      localStorage.setItem("imhuman-onboarding-dismissed", "true");
-    } catch {}
-  };
-
-  return (
-    <div
-      role="region"
-      aria-label="Welcome guide"
-      className="mb-3 px-3.5 py-2.5 rounded-[8px] border border-line bg-panel/70 backdrop-blur-xs flex items-center justify-between gap-4 font-ui text-[12.5px] text-muted animate-in fade-in duration-200"
-    >
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span><strong className="text-ink font-medium">What to paste:</strong> AI-drafted text or outlines.</span>
-        <span className="hidden sm:inline text-line" aria-hidden="true">•</span>
-        <span><strong className="text-ink font-medium">How voices work:</strong> Pick or train a voice profile.</span>
-      </div>
-      <button
-        type="button"
-        onClick={handleDismiss}
-        className="text-muted hover:text-ink p-1 rounded transition-colors shrink-0 cursor-pointer"
-        aria-label="Dismiss guide"
-      >
-        <X size={14} />
-      </button>
-    </div>
-  );
-}
-
 import { MIN_INPUT_CHARS, MAX_INPUT_CHARS } from "@/lib/limits";
 import { Button } from "@/components/ui/button";
 
@@ -88,8 +43,6 @@ export function WorkspaceContainer() {
 
   return (
     <div className="w-full flex flex-col">
-      <WorkspaceOnboarding />
-
       {/* Main bordered workspace bench */}
       <div className="w-full bg-panel border border-line rounded-[10px] overflow-hidden flex flex-col">
         <WorkspaceToolbar />
