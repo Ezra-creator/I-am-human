@@ -22,7 +22,10 @@ export function Header() {
 
         {/* Desktop / Tablet Navigation (> 680px) */}
         <div className="hidden min-[681px]:flex items-center">
-          <nav aria-label="Primary" className="flex items-center gap-0.5 sm:gap-1 font-ui text-[13.5px] lg:text-[14px]">
+          <nav
+            aria-label="Primary"
+            className="flex items-center p-1 rounded-full bg-panel/90 border border-line backdrop-blur-xs shadow-xs font-ui text-[13px] sm:text-[13.5px]"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === "/"
@@ -35,11 +38,11 @@ export function Header() {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "px-2.5 sm:px-3 py-1.5 rounded-[6px] transition-colors duration-150 select-none",
-                    "focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2",
+                    "px-3.5 py-1.5 rounded-full transition-all duration-150 select-none font-medium leading-none",
+                    "focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-1",
                     isActive
-                      ? "text-ink bg-panel shadow-[inset_0_0_0_1px_var(--line)] font-medium"
-                      : "text-muted hover:text-ink font-medium"
+                      ? "text-ink bg-bg shadow-xs border border-line/70 font-semibold"
+                      : "text-muted hover:text-ink hover:bg-bg/40 border border-transparent"
                   )}
                 >
                   {item.label}
