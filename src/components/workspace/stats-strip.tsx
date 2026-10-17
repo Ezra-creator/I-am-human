@@ -90,7 +90,7 @@ export function StatsStrip() {
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-xs">
-                  Scans key factual anchors (numbers, dates, quotes, and proper nouns) between drafts to ensure essential details weren’t dropped during rewriting.
+                  Checks numbers, dates, quotes, and names across drafts.
                 </TooltipContent>
               </Tooltip>
             </div>

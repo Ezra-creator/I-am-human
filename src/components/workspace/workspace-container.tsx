@@ -33,29 +33,20 @@ function WorkspaceOnboarding() {
     <div
       role="region"
       aria-label="Welcome guide"
-      className="mb-4 p-4 rounded-[8px] border border-line bg-panel/70 backdrop-blur-xs flex items-start justify-between gap-4 font-ui text-[13px] text-muted animate-in fade-in duration-200"
+      className="mb-3 px-3.5 py-2.5 rounded-[8px] border border-line bg-panel/70 backdrop-blur-xs flex items-center justify-between gap-4 font-ui text-[12.5px] text-muted animate-in fade-in duration-200"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 leading-relaxed flex-1">
-        <div>
-          <span className="text-ink font-semibold block mb-0.5">What to paste:</span>
-          <span>Drafts written or outlined by AI with stiff transitions or stock vocabulary.</span>
-        </div>
-        <div>
-          <span className="text-ink font-semibold block mb-0.5">How voices work:</span>
-          <span>Pick a built-in profile or teach the studio your personal cadence in Voices.</span>
-        </div>
-        <div>
-          <span className="text-ink font-semibold block mb-0.5">Honest craft:</span>
-          <span>Rewriting focuses on cadence and human variety rather than gaming automated detector scores.</span>
-        </div>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span><strong className="text-ink font-medium">What to paste:</strong> AI-drafted text or outlines.</span>
+        <span className="hidden sm:inline text-line" aria-hidden="true">•</span>
+        <span><strong className="text-ink font-medium">How voices work:</strong> Pick or train a voice profile.</span>
       </div>
       <button
         type="button"
         onClick={handleDismiss}
-        className="text-muted hover:text-ink p-1.5 rounded transition-colors shrink-0 cursor-pointer -mr-1 -mt-1"
+        className="text-muted hover:text-ink p-1 rounded transition-colors shrink-0 cursor-pointer"
         aria-label="Dismiss guide"
       >
-        <X size={15} />
+        <X size={14} />
       </button>
     </div>
   );
@@ -153,11 +144,6 @@ export function WorkspaceContainer() {
           </Button>
         )}
       </div>
-
-      {/* Editorial colophon note */}
-      <p className="font-ui text-[12px] text-muted/75 max-w-[75ch] mt-4 leading-relaxed select-none">
-        Crafted for natural cadence, sentence variety, and voice authenticity. AI detection models remain inherently probabilistic; our focus is how writing genuinely reads to human eyes.
-      </p>
     </div>
   );
 }

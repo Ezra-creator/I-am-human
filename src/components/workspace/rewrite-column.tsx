@@ -165,11 +165,8 @@ export function RewriteColumn() {
       <div className="flex-1 flex flex-col min-w-0">
         {status === "idle" && (
           <div className="py-8 sm:py-12 max-w-md select-none">
-            <p className="font-text italic text-[17px] sm:text-[18px] text-ink/80 leading-snug">
-              Your natural draft will appear here.
-            </p>
-            <p className="font-ui text-[13px] sm:text-[13.5px] text-muted leading-relaxed mt-2">
-              Paste or type your draft on the left, pick a voice and edit strength, then press Rewrite to rework its rhythm and phrasing.
+            <p className="font-text italic text-[17px] sm:text-[18px] text-muted leading-snug">
+              Your rewrite will appear here.
             </p>
           </div>
         )}

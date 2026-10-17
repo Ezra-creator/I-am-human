@@ -147,7 +147,7 @@ export function VoiceDialog({
           <DialogHeader className="shrink-0 pr-6">
             <DialogTitle>{voiceToEdit ? "Edit voice" : "Add voice"}</DialogTitle>
             <DialogDescription>
-              Add examples of your writing. I’m human analyzes sentence rhythm, phrasing habits, and word choices to build a style guide for your rewrites.
+              Add writing samples to train this voice profile.
             </DialogDescription>
           </DialogHeader>
 
@@ -173,9 +173,6 @@ export function VoiceDialog({
                   "focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-1 placeholder:text-muted/60"
                 )}
               />
-              <span className="text-[11px] text-muted block mt-1">
-                {name.length}/40 characters
-              </span>
             </div>
 
             {/* Samples inputs */}
@@ -252,19 +249,8 @@ export function VoiceDialog({
                   <Plus size={14} strokeWidth={1.5} />
                   <span>Add another sample</span>
                 </Button>
-
-                {totalWords > 0 && totalWords < 400 && meetsMinimum && (
-                  <span className="text-[12px] text-muted">
-                    More writing gives a more accurate voice.
-                  </span>
-                )}
               </div>
             </div>
-
-            {/* Privacy notice banner */}
-            <p className="text-[12px] text-muted leading-relaxed pt-2 border-t border-line/60">
-              Samples are analyzed directly in this browser; only a concise style guide is transmitted when rewriting, never your raw samples.
-            </p>
           </div>
 
           <DialogFooter className="shrink-0 sticky bottom-0 bg-panel pt-3 pb-[max(6px,env(safe-area-inset-bottom,0px))] border-t border-line mt-auto">

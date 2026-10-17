@@ -144,7 +144,7 @@ export default function HistoryPage() {
         <div>
           <h1 className="text-[24px] font-bold text-ink tracking-tight">History</h1>
           <p className="text-[14.5px] text-muted mt-1 leading-relaxed">
-            Your past revisions, metrics, and drafts remain private to this device.
+            Past revisions saved in this browser.
           </p>
         </div>
 
@@ -203,7 +203,7 @@ export default function HistoryPage() {
       {!storageBlocked && mounted && allEntries && allEntries.length === 0 && (
         <div className="p-10 md:p-14 text-center rounded-[10px] border border-line bg-panel">
           <p className="text-[15px] text-muted leading-relaxed max-w-md mx-auto">
-            No revisions saved yet. Rewritten drafts and notes will be cataloged here automatically.
+            No saved revisions yet.
           </p>
         </div>
       )}

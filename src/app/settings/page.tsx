@@ -245,7 +245,7 @@ export default function SettingsPage() {
             How your text is handled
           </h2>
           <p className="text-[13.5px] text-muted leading-relaxed max-w-2xl break-words [overflow-wrap:anywhere]">
-            Rewrites are processed via stateless API calls with your selected voice descriptor. We operate without user accounts, analytics trackers, or server databases—your writing history and custom voice profiles reside entirely in your local browser storage.
+            Rewrites are processed statelessly. Your voices and history are stored locally in your browser.
           </p>
           <div className="pt-1">
             <a
@@ -264,9 +264,6 @@ export default function SettingsPage() {
         <section className="py-6 space-y-4">
           <div>
             <h2 className="text-[15px] font-semibold text-ink">Your data</h2>
-            <p className="text-[13px] text-muted mt-0.5">
-              Export your custom voices and history to a backup file, import previously saved data, or erase all local information.
-            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">

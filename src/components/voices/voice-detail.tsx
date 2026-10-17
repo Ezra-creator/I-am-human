@@ -268,9 +268,6 @@ export function VoiceDetail({
           <div className="p-3 rounded-[6px] border border-line bg-panel text-[12.5px] leading-relaxed text-ink whitespace-pre-wrap max-h-[180px] overflow-y-auto">
             {voice.descriptor}
           </div>
-          <span className="text-[11px] text-muted block mt-1">
-            {voice.descriptor.length}/1500 characters
-          </span>
         </section>
 
         {/* Samples List */}

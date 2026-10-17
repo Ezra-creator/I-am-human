@@ -38,7 +38,7 @@ export function RhythmChart({ originalText, rewriteText }: RhythmChartProps) {
             </button>
           </TooltipTrigger>
           <TooltipContent side="top" className="max-w-xs">
-            Sentence variation measures how dynamically your pacing rises and falls. Monotonous AI text tends to cluster around identical lengths; human writing breathes with short punchy lines alongside longer thoughts.
+            Measures sentence length variation across drafts.
           </TooltipContent>
         </Tooltip>
       </div>
